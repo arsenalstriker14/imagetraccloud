@@ -8,7 +8,6 @@ from itertools import chain
 from .models import *
 from . import serializers
 from imagetrac_docker.taskmanager.models import *
-from imagetrac_docker.b5.analytics.analytics import analytics
 from .forms import *
 from django.forms.models import modelformset_factory, BaseModelFormSet, inlineformset_factory
 from django.template.response import TemplateResponse
