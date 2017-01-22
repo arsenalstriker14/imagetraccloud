@@ -275,7 +275,7 @@ class Migration(migrations.Migration):
                 ('long_sku', models.CharField(max_length=30)),
                 ('filename', models.CharField(max_length=50)),
                 ('item_ns', models.CharField(max_length=30, null=True)),
-                ('skus', models.CharField(max_length=30, null=True)),
+                ('sku', models.CharField(max_length=30, null=True)),
                 ('sku_ns', models.CharField(max_length=30, null=True)),
             ],
         ),
