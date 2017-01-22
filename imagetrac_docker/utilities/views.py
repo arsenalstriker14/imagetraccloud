@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from imagetrac_docker.utilities.tasks.dj_export_audit import *
+from .tasks.dj_export_audit import *
 
 # Create your views here.
 def export_audit(request):
