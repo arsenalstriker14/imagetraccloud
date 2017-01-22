@@ -1,4 +1,10 @@
 ---
+deployment:
+  dockerhub:
+    branch: master
+    commands:
+      - $DOCKER_HUB_TRIGGER
+
 test:
   override:
     - coverage run manage.py test
