@@ -80,7 +80,6 @@ urlpatterns = [
     url(r'^edit_hotlist/(?P<id>\w+)/', delete_hotlist_item, name='delete_hotlist_item'),
     # url(r'^logout/$', auth_views.logout, {'next_page': '/'}),
     url(r'^logout/$', auth_views.logout, name='logout_page'),
-    url(r'^analytics/', analytics, name="analytics"),
     url(r'^b5/', include('imagetrac_docker.b5.urls', namespace='b5', app_name='b5')),
     url(r'^taskmanager/', include('imagetrac_docker.taskmanager.urls', namespace="taskmanager")),
     url(r'^utilities/', include('imagetrac_docker.utilities.urls', namespace='utilities', app_name='utilities')),
