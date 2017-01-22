@@ -1,0 +1,88 @@
+{% extends "base_nonav.html" %}
+
+{% load staticfiles %}
+
+{% csrf_token %}
+
+{% block head_content %}
+        
+        <style>
+        
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+    <div class="row">
+        
+        <div class="col-md-12">
+            <div class="well imagewell">
+               
+                <div id="personal_tlist" class="tlist">
+                    
+                    <h4>detail view</h4>
+                    {% if records %}
+                    {% for record in records %}
+                    <table id="personal_table" 
+                        data-toggle="table"  
+                        data-query-params="queryParams"
+                        data-pagination="true"
+                        data-striped="false"
+                        data-page-size = 20
+                        class="display_table">
+                        <thead>
+                            <tr>
+                                <th>priority</th>
+                                <th>from</th>
+                                <th>job name</th>
+                                <th>request</th>
+                                <th>description</th>
+                                <th>target return</th>
+                                <th>accepted_by</th>
+                                <th>status</th>
+                                <th>completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                
+                            <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ record.priority }}" id="_{{ record.id }}">
+
+                                <td class="priority_cell">{{ record.priority }}</td>
+                                <td><a href="mailto:{{ record.assigned_by.email }}?subject=taskbox:&nbsp;{{ record.long_sku }}-{{ record.cell_number }}&nbsp;&nbsp;{{ record.job_name }}">{{ record.assigned_by }}</a></td>
+                                
+                                <td>{{ record.job_name }}</td>
+                                <td>{{ record.request }}</td>
+                                <td><div class="note"><a title="{{ record.note }}" href="#">{{ record.note }}</a></div></td>
+                                <td>{{ record.date_due }}</td>
+                                <td><a href="mailto:{{ record.accepted_by.email }}?subject=taskbox:&nbsp;{{ record.long_sku }}-{{ record.cell_number }}&nbsp;&nbsp;{{ record.job_name }}">{{ record.accepted_by }}</a></td>
+                                <td class="status_cell">{{ record.status }}</td>
+                                <td> </td>
+                                <td>{{ record.completed_on }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                        <ul>
+                            <li><a href='{{UPLOAD_ROOT}}/uploads/{{ record.attachment }}'>{{ record.attachment }}</a></li>
+                            <li><a href='{{UPLOAD_ROOT}}/uploads/{{ record.attachment2 }}'>{{ record.attachment2 }}</a></li>
+                            <li><a href='{{UPLOAD_ROOT}}/uploads/{{ record.attachment3 }}'>{{ record.attachment3 }}</a></li>
+                            <li><a href='{{UPLOAD_ROOT}}/uploads/{{ record.attachment4 }}'>{{ record.attachment4 }}</a></li>
+                            <li><a href='{{UPLOAD_ROOT}}/uploads/{{ record.attachment5 }}'>{{ record.attachment5 }}</a></li>
+                        </ul>          
+                    {% endfor %}
+                    {% else %}
+                    {% endif %}
+               
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>        
+
+{% endblock %}

@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style type="text/css">
+            h6{ margin: 15px 0 0 0; }
+            .fixed-table-container { font-size: 11px; }
+            div.row{width:2000px;}
+            div.col-md-12{width:2000px;}
+            .stage{margin:0 auto;max-width: 2000px;}
+        </style>
+        
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="stage">
+        {% if messages %}
+        <div class="row">
+            <div class="col-sm-12">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if user.is_staff %}
+        <div class="row searchform">
+            <div class="col-md-12">
+                <div class="well fr_well">
+                    
+                    {% crispy form %}
+                   <!-- <details>
+                        <summary>Page Information</summary>
+                        <p>Entering a client name or job number in the main search field yields post pages and records associated with your search term. 
+                        <p>Entering a valid job number in the upper search field enables the QuckPost module, while entering a job number in the upper search field AND choosing a client from the pulldown menu will enable the Multipost module. 
+                        <p>Finally, track your specific tasks via the Taskmanager module.
+                    </details> -->
+                    
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row searchform">
+            <div class="col-md-12">
+                <div class="well fr_well">
+                    
+                    {% crispy form %}
+                   <!-- <details>
+                        <summary>Page Information</summary>
+                        <p>Entering a client name or job number in the main search field yields post pages and records associated with your search term. 
+                        <p>Entering a valid job number in the upper search field enables the QuckPost module, while entering a job number in the upper search field AND choosing a client from the pulldown menu will enable the Multipost module. 
+                        <p>Finally, track your specific tasks via the Taskmanager module.
+                    </details> -->
+                    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+                {% if records %}
+            <div class="col-md-12">
+                <div class="well fr_well">
+                  <h4>first receipts list</h4> 
+                    <table class="color_grid">
+                            {% for cgrecord in cgrecords  %}
+                        <tr>
+                            <td><div class="cgbox" style="background-color:#{{ cgrecord.hexcode }};"></div></td><td class="cg_desc">{{ cgrecord.description }}</td>
+                        </tr>
+                            {% endfor %}
+                    </table>
+                    <table  
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-striped = "false"
+                            data-page-size = 100
+                            data-show-refresh = 'true'
+                            data-show-toggle = 'true'
+                            data-search="true"
+                            class="striped">
+                        <thead>
+                            <tr>
+                                <th data-field="first"  data-sortable="true">fr date</th>
+                                <th data-field="ad date"  data-sortable="true">ad date</th>
+                                <th data-field="size type"  data-sortable="true">size</th>
+                                <th data-field="vendor"  data-sortable="true">vendor</th>
+                                <th data-field="item"  data-sortable="true">item</th>
+                                <th data-field="item_ns"  data-sortable="true">item no space</th>
+                                <th data-field="manufacture"  data-sortable="true">mfg</th>
+                                <th data-field="description"  data-sortable="true">description</th>
+                                <th data-field="color description"  data-sortable="true">color</th>
+                                <th data-field="order_date" data-sortable="true" sorter="monthSorter">dc ordered</th>
+                                <th data-field="received_studio" data-sortable="true" sorter="monthSorter">dc received</th>
+                                <th data-field="received_buyer" data-sortable="true">buyer sample</th>
+                                <th data-field="studio_out" data-sortable="true" sorter="monthSorter">to studio</th>
+                                <th data-field="confirmed_placed" data-sortable="true" sorter="monthSorter">processed</th>
+                                <th data-field="availability" class="hidden">file na</th>
+                                <th data-field="availability" class="">rec other</th>
+                                <th data-field="received_dc" data-sortable="true">rec at dc</th>
+                                <th data-field="dc_on_hand" data-sortable="true">dc on hand</th>
+                                <th data-field="137" cdata-sortable="true">next door</th>
+                                <th data-field="dc_on_order" data-sortable="true">dc on order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}                            
+
+                            <tr>
+                                <td>{{ record.first_date }}</td>
+                                <td>{{ record.ad_date }}</td>
+                                <td>{{ record.size_type }}</td>
+                                <td>{{ record.vendor_number }}</td>
+                                <td class="item"><a href='/product/{{ record.sku }}/{{ record.item_no }}' onclick="showConsole('/product/{{ record.sku }}/{{ record.item_no }}');return(false);">{{ record.item_no }}</a></td>
+                                <td>{{ record.item_ns }}</td>
+                                <td>{{ record.mfg }}</td>
+                                <td>{{ record.desc }}</td>
+                                <td>{{ record.color_desc }}</td>
+                                <td>{{ record.order_date }}</td>
+                                <td>{{ record.received_dc }}</td>
+                                <td class="buyer">{{ record.received_buyer }}</td>
+                                <td class="studio">{{ record.studio_out }}</td>
+                                <td class="processed">{{ record.confirmed_placed }}</td>
+                                <td class="availability hidden">{{ record.na }}</td>
+                                <td class="">{{ record.received_other }}</td>
+                                <td class="">{{ record.dc_received_u }}</td>
+                                <td class="">{{ record.curr_dc_oh_u  }}</td>
+                                <td class="">{{ record.merch_to_137  }}</td>
+                                <td class="">{{ record.dc_curr_oo_u }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            {% else %}
+            {% endif %}
+            
+                {% if workrecords %}
+                <div class="well fr_well">
+                  <h4>vendor list</h4> 
+                    <table class="color_grid">
+                            {% for cgworkrecord in cgworkrecords  %}
+                        <tr>
+                            <td><div class="cgbox" style="background-color:#{{ cgworkrecord.hexcode }};"></div></td><td class="cg_desc">{{ cgworkrecord.description }}</td>
+                        </tr>
+                            {% endfor %}
+                    </table>
+                    <table  
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-striped = "false"
+                            data-page-size = 100
+                            data-show-refresh = 'true'
+                            data-show-toggle = 'true'
+                            data-search="true"
+                            class="striped">
+                        <thead>
+                            <tr>
+                                <th data-field="first"  data-sortable="true">fr date</th>
+                                <th data-field="ad date"  data-sortable="true">ad date</th>
+                                <th data-field="size type"  data-sortable="true">size</th>
+                                <th data-field="item"  data-sortable="true">item</th>
+                                <th data-field="item_ns"  data-sortable="true">item no space</th>
+                                <th data-field="manufacture"  data-sortable="true">mfg</th>
+                                <th data-field="description"  data-sortable="true">description</th>
+                                <th data-field="color description"  data-sortable="true">color</th>
+                                <th data-field="order_date" data-sortable="true" sorter="monthSorter">dc ordered</th>
+                                <th data-field="received_studio" data-sortable="true" sorter="monthSorter">dc received</th>
+                                <th data-field="received_buyer" data-sortable="true">buyer sample</th>
+                                <th data-field="studio_out" data-sortable="true" sorter="monthSorter">to studio</th>
+                                <th data-field="confirmed_placed" data-sortable="true" sorter="monthSorter">processed</th>
+                                <th data-field="availability" class="hidden">file na</th>
+                                <th data-field="availability" class="">rec other</th>
+                                <th data-field="received_dc" data-sortable="true">rec at dc</th>
+                                <th data-field="dc_on_hand" data-sortable="true">dc on hand</th>
+                                <th data-field="137" data-sortable="true">next door</th>
+                                <th data-field="dc_on_order" data-sortable="true">dc on order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for workrecord in workrecords %}                            
+
+                            <tr>
+                                <td>{{ workrecord.first_date }}</td>
+                                <td>{{ workrecord.ad_date }}</td>
+                                <td>{{ workrecord.size_type }}</td>
+                                <td class="item"><a href='/product/{{ workrecord.sku }}/{{ workrecord.item_no }}' onclick="showConsole('/product/{{ workrecord.sku }}/{{ workrecord.item_no }}');return(false);">{{ workrecord.item_no }}</a></td>
+                                <td>{{ workrecord.item_ns }}</td>
+                                <td>{{ workrecord.mfg }}</td>
+                                <td>{{ workrecord.desc }}</td>
+                                <td>{{ workrecord.color_desc }}</td>
+                                <td>{{ workrecord.order_date }}</td>
+                                <td>{{ workrecord.received_dc }}</td>
+                                <td class="buyer">{{ workrecord.received_buyer }}</td>
+                                <td class="studio">{{ workrecord.studio_out }}</td>
+                                <td class="processed">{{ workrecord.confirmed_placed }}</td>
+                                <td class="availability hidden">{{ workrecord.na }}</td>
+                                <td class="">{{ workrecord.received_other }}</td>
+                                <td class="">{{ workrecord.dc_received_u }}</td>
+                                <td class="">{{ workrecord.curr_dc_oh_u  }}</td>
+                                <td class="">{{ workrecord.merch_to_137  }}</td>
+                                <td class="">{{ workrecord.dc_curr_oo_u }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+        </div>
+    {% else %}
+    {% endif %}
+                  
+
+                </div>
+            </div>
+        
+            
+        </div>  
+
+        <script>
+        var $table = $('#table');
+
+        $(function () {
+        });
+        function queryParams() {
+            return {
+                type: 'owner',
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 100,
+                page: 1
+            };
+        }
+        function highlightRow(){
+            var studios = document.querySelectorAll('.studio');
+            var targets = document.querySelectorAll('.availability');
+            var buyers = document.querySelectorAll('.buyer');
+            var confirmeds = document.querySelectorAll('.processed');
+            var items = document.querySelectorAll('.item');
+            for (var i=0; i<confirmeds.length; i++){
+                
+                if ((confirmeds[i].innerHTML == 'None') || (confirmeds[i].childNodes.length === 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                    confirmeds[i].parentElement.className = ('awaiting');
+                }
+                if (studios[i].innerHTML != 'None'){
+                    studios[i].parentElement.className = (' ');
+                    studios[i].parentElement.className = ('to_studio');
+                }
+                if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].childNodes.length > 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<buyers.length; i++){
+                if (buyers[i].innerHTML)
+                if ((buyers[i].innerHTML == 'X') || (buyers[i].innerHTML == 'x')){
+                    buyers[i].parentElement.className = ('buyer_sample');
+                }
+                
+            }
+            for (var i=0; i<targets.length; i++){
+                if (targets[i].innerHTML)
+                if (targets[i].innerHTML == 't'){
+                    targets[i].parentElement.className = ('disabled');
+                }
+                
+            }
+            for (var i=0; i<confirmeds.length; i++){
+                if ((confirmeds[i].innerHTML != 'None') && (targets[i].parentElement.className != 'disabled')){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<items.length; i++){
+                if (items[i].firstChild.innerHTML.length < 19){
+                    items[i].parentElement.className = (' ');
+                    items[i].parentElement.className = ('dimmed');
+                }
+                
+            }
+        }
+        function monthSorter(a, b) {
+            if (a.month < b.month) return -1;
+            if (a.month > b.month) return 1;
+            return 0;
+        }
+        highlightRow();
+        </script>
+    </div>
+{% endblock %}

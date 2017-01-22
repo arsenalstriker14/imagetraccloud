@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+{% block head_content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion({
+      heightStyle: "content"
+    });
+  });
+</script>
+<style type="text/css">
+	#accordion{margin-top:15px;}
+	td{padding:10px;}
+	.sub{line-height: 1.5;}
+	.ui-widget-content{color:#555;}
+	.ui-widget{font-family:Helvetica, Arial, sans-serif;}
+	.ui-helper-reset{font-size:1em;}
+	.half_copy_box{position: relative;display: block;max-width:1000px;margin-bottom:10px;}
+	.extra_clearance{padding-bottom:35px;}
+	.clear_both{margin:15px 0 0 0;}
+	.super_s{font-size: .8em;line-height: 2;}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+	<div class="row">
+		<h2>Adding First Receipts</h2>
+		<p>The process for adding first receipts records to the system is fairly straightforward: </p>
+		<p class="bold sub">The basic steps are as follows:</p>
+		<ul>
+			<li>preparing the daily recepts csv</li>
+			<li>running the daily.py utility</li>
+			<li>executing the navicat import task</li>
+		</ul>
+	</div>
+    <div class="row">
+        <div class="col-sm-12">
+        	<div id="accordion">
+				<h3>copy the data</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>Open the daily_recepts.py file (located in ADVERTISING/Inserts/MAGETRAC
+							csv) in a text editor like SublimeText. Copy the contents of the first receipts email into the daily_recepts.py csv.</td>
+							<td><img src="{% static 'img/docs/daily/copy.png' %}" /></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><img src="{% static 'img/docs/daily/paste.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>complete the lines</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>First, lets complete the lines. Line 1 is already complete:</td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/daily/complete.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>Line 3, however, needs a buyer name. <span class="bold">copy the buyer name (and tab following it) from Line 2, and paste it into the line below it to complete the line:</span></td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/daily/needsname.png' %}" /><br><br><img src="{% static 'img/docs/daily/buyername.png' %}" /><br><br><img src="{% static 'img/docs/daily/paulcomplete.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>if, like Line 7, the line needs the base product info... </td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/daily/needsproduct.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td class="bold">copy all of the info (up to the color way) from the preceding line...</td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/daily/targetinfo.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td class="bold">...and paste it into the line below it to complete the line:</td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/daily/productcomplete.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>complete all of the incomplete lines.</td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>set the columns</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>the csv in csv files stands for comma seperated values; in other words, it's just a text file with columns demarcated by commas. So the idea here is to remove commas from where you don't want them; then to place commas where they belong.
+							First, <span class="bold">use find and replace to remove all commas from the document:</span></td><td></td>
+							<td><img src="{% static 'img/docs/daily/rm_comma.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>next, lets <span class="bold">select/copy a colon followed by a space <img src="{% static 'img/docs/daily/colonspace.png' %}" /> and replace them with a comma</span></td><td></td>
+							<td><img src="{% static 'img/docs/daily/replacecolspace.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>finally, lets <span class="bold">select/copy a tab <img src="{% static 'img/docs/daily/tabshot.png' %}" /> and replace it with a comma</span></td><td></td>
+							<td><img src="{% static 'img/docs/daily/replacetab.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>this should leave you with a well formatted, first receipts csv file. save it to the IMAGETRAC/csv directory as "daily_receipts.csv"</td><td></td>
+							<td><img src="{% static 'img/docs/daily/finished.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>daily utility</h3>
+				<div>
+				<tr>
+					<td>
+						From the terminal (bash shell) of an imagetrac utilities enabled workstation, enter "daily.py". When prompted, enter the first receipts date in 6 digit (MMDDYY) format.<br /><br />
+					</td><td></td>
+					<td><img src="{% static 'img/docs/daily/terminal.png' %}" /></td><td></td>
+				</tr>
+				
+				</div>
+				<h3>importer</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>now let's import our newly created records into the datatbase. Do this by finding the "import_daily" task in navicat. Double click the icon, then press "start" to initiate the process.</td>
+							<td><img src="{% static 'img/docs/daily/import_daily.png' %}"  /></td>
+						</tr>
+						<tr>
+							<td></td><td><img src="{% static 'img/docs/daily/idailystart.png' %}"></td>
+						</tr>
+
+					</table>
+				</div>
+				
+				</div>
+			</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

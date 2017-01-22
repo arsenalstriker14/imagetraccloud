@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% csrf_token %}
+
+
+{% block head_content %}
+  	<script src="{% static 'js/bootstrap-table.js' %}"></script>
+  	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawVisualization);
+
+
+      function drawVisualization() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable([
+         ['Month', 'EyeMagic webfiles', 'Big5 webfiles', 'EyeMagic printfiles', 'Big5 printfiles', 'EyeMagic', 'Big5'],
+         ['2016/01',  {{ janEM_WEBrecords }}, {{ janINT_WEBrecords }}, {{ janEM_PRINTrecords }}, {{ janINT_PRINTrecords }}, {{ janEMrecords }}, {{ janINTrecords }}],
+         ['2016/02',  {{ febEM_WEBrecords }}, {{ febINT_WEBrecords }}, {{ febEM_PRINTrecords }}, {{ febINT_PRINTrecords }}, {{ febEMrecords }}, {{ febINTrecords }}],
+         ['2016/03',  {{ marEM_WEBrecords }}, {{ marINT_WEBrecords }}, {{ marEM_PRINTrecords }}, {{ marINT_PRINTrecords }}, {{ marEMrecords }}, {{ marINTrecords }}],
+         ['2016/04',  {{ aprEM_WEBrecords }}, {{ aprINT_WEBrecords }}, {{ aprEM_PRINTrecords }}, {{ aprINT_PRINTrecords }}, {{ aprEMrecords }}, {{ aprINTrecords }}],
+         ['2016/05',  {{ mayEM_WEBrecords }}, {{ mayINT_WEBrecords }}, {{ mayEM_PRINTrecords }}, {{ mayINT_PRINTrecords }}, {{ mayEMrecords }}, {{ mayINTrecords }}],
+         ['2016/06',  {{ junEM_WEBrecords }}, {{ junINT_WEBrecords }}, {{ junEM_PRINTrecords }}, {{ junINT_PRINTrecords }}, {{ junEMrecords }}, {{ junINTrecords }}],
+         ['2016/07',  {{ julEM_WEBrecords }}, {{ julINT_WEBrecords }}, {{ julEM_PRINTrecords }}, {{ julINT_PRINTrecords }}, {{ julEMrecords }}, {{ julINTrecords }}],
+         ['2016/08',  {{ augEM_WEBrecords }}, {{ augINT_WEBrecords }}, {{ augEM_PRINTrecords }}, {{ augINT_PRINTrecords }}, {{ augEMrecords }}, {{ augINTrecords }}],
+         ['2016/09',  {{ sepEM_WEBrecords }}, {{ sepINT_WEBrecords }}, {{ sepEM_PRINTrecords }}, {{ sepINT_PRINTrecords }}, {{ sepEMrecords }}, {{ sepINTrecords }}],
+         ['2016/10',  {{ octEM_WEBrecords }}, {{ octINT_WEBrecords }}, {{ octEM_PRINTrecords }}, {{ octINT_PRINTrecords }}, {{ octEMrecords }}, {{ octINTrecords }}],
+         ['2016/11',  {{ novEM_WEBrecords }}, {{ novINT_WEBrecords }}, {{ novEM_PRINTrecords }}, {{ novINT_PRINTrecords }}, {{ novEMrecords }}, {{ novINTrecords }}],
+         ['2016/12',  {{ decEM_WEBrecords }}, {{ decINT_WEBrecords }}, {{ decEM_PRINTrecords }}, {{ decINT_PRINTrecords }}, {{ decEMrecords }}, {{ decINTrecords }}]
+      ]);
+
+    var options = {
+      title : 'Monthly File Processing at a glance',
+      vAxis: {title: 'files'},
+      hAxis: {title: 'Month'},
+      seriesType: 'bars',
+      series: {6: {type: 'line'}}
+    };
+
+    var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  }
+    </script>
+  	<style type="text/css">
+  	/*tbody.img_totals_tb{display: none;}*/
+  	tbody.visible{display: inherit;}
+  	.totals_mntb {display: table; border-collapse: collapse;}
+  	.totals_mntb .mntb_row{display:table-row;}
+  	.totals_mntb .mntb_cell {display: table-cell;text-align: center;vertical-align: top;width:100px;padding-right: 200px;}
+  	.mntbhd_cell{font-weight: bold;padding-right: 20px;width:60px;}
+  	</style>
+{% endblock %}
+
+
+{% block content %}
+	<div id="list_controls" class="container stage">
+		<div class="row">
+			<div class="col-md-12">
+                <div class="well">
+                    
+                    {% crispy form %}
+                   <details>
+                        <summary>search hints</summary>
+                        <br />
+                        <p>the imagetrac smartsearch recognizes a number of query types: 
+                       <table class="details_tb">
+                            <tr><th>query:</th><th>returns:</th></tr>
+                            <tr><td class="detail_tb_bold">“eyemagic”</td><td>returns a list of images processed by eyemagic studio</td></tr>
+                            <tr><td class="detail_tb_bold">“internal”</td><td>returns a list of images processed by big 5 production</td></tr>
+                            <tr><td class="detail_tb_bold">“xyp”</td><td>returns list of images processed by input user name</td></tr>
+                            <tr><td class="detail_tb_bold">“dupes”</td><td>returns list of item numbers processed more than once</td></tr>
+                        </table>
+                    </details>
+                     {%  if oplinks or overlinks %} 
+                     {{data}}
+                    <table  
+			        data-toggle="table"  
+			        data-query-params="queryParams"
+			        data-pagination="true"
+			        data-striped = "false"
+			        data-page-size = 25
+			        data-show-refresh = 'true'
+			        data-show-toggle = 'true'
+			        data-search="true"
+			        class="striped">
+			        <thead>
+			            <tr>
+			                <th data-field="class"  data-sortable="true">item number</th>
+			    			<th data-field="description"  data-sortable="true">filename</th>
+			    			<th data-field="buyer"  data-sortable="true">processor</th>
+			    			<th data-field="records"data-sortable="true" >upload date</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            {% for oplink in oplinks %}                            
+			            <tr>
+			                <td>{{ oplink.item_no }}</td>
+			                <td><a href='/product/{{ oplink.sku }}/{{ oplink.item_no }}' onclick="showConsole('/product/{{ oplink.sku }}/{{ oplink.item_no }}');return(false);">{{ oplink.filename }}</a></td>
+			                <td>{{ oplink.processor }}</td>
+			                <td>{{ oplink.upload_date }}</td>
+			            </tr>
+			            {% endfor %}
+			            {% for overlink in overlinks %}                            
+			            <tr>
+			                <td>{{ overlink.item_no }}</td>
+			                <td><a href='/product/{{ overlink.sku }}/{{ overlink.item_no }}' onclick="showConsole('/product/{{ overlink.sku }}/{{ overlink.item_no }}');return(false);">{{ overlink.filename }}</a></td>
+			                <td>{{ overlink.processor }}</td>
+			                <td>{{ overlink.upload_date }}</td>
+			            </tr>
+			            {% endfor %}
+			        </tbody>
+			    </table>
+                    {% endif %}
+                </div>
+            </div>
+
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<!-- <h4>images processed - by month<span><select onChange="display_monthlies(this.value)"><option value="00">---</option><option value="01">january</option><option value="02">february</option><option value="03">march</option><option value="04">april</option><option value="05">may</option><option value="06">june</option></select></span></h4>
+					<div id="tablehead" class="totals_mntb">                          
+			            <div class="mntb_row mntbhd_row"><div class="mntb_cell mntbhd_cell">source</div><div class="mntb_cell mntbhd_cell">webimages processed</div><div class="mntb_cell mntbhd_cell">printimages processed</div><div class="mntb_cell mntbhd_cell">total images</div><div class="mntb_cell mntbhd_cell">total sku's</div></div>			           
+			        </div>
+					<div id="00" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ cmthEM_WEBrecords }}</div><div class="mntb_cell">{{ cmthEM_PRINTrecords }}</div><div class="mntb_cell">{{ cmthEMrecords }}</div><div class="mntb_cell">{{ cmthEMCVSrecords }}</div></div>
+			            <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ cmthINT_WEBrecords }}</div><div class="mntb_cell">{{ cmthINT_PRINTrecords }}</div><div class="mntb_cell">{{ cmthINTrecords }}</div><div class="mntb_cell">{{ cmthINTCVSrecords }}</div></div>			           
+			        </div>
+			        <div id="01" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ janEM_WEBrecords }}</div><div class="mntb_cell">{{ janEM_PRINTrecords }}</div><div class="mntb_cell">{{ janEMrecords }}</div><div class="mntb_cell">{{ janEMCVSrecords }}</div></div>
+			            <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ janINT_WEBrecords }}</div><div class="mntb_cell">{{ janINT_PRINTrecords }}</div><div class="mntb_cell">{{ janINTrecords }}</div><div class="mntb_cell">{{ janINTCVSrecords }}</div></div>			           
+			        </div>
+			        <div id="02" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ febEM_WEBrecords }}</div><div class="mntb_cell">{{ febEM_PRINTrecords }}</div><div class="mntb_cell">{{ febEMrecords }}</div><div class="mntb_cell">{{ febEMCVSrecords }}</div></div>
+			            <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ febINT_WEBrecords }}</div><div class="mntb_cell">{{ febINT_PRINTrecords }}</div><div class="mntb_cell">{{ febINTrecords }}</div><div class="mntb_cell">{{ febINTCVSrecords }}</div></div>			           
+			        </div>
+			        <div id="03" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ marEM_WEBrecords }}</div><div class="mntb_cell">{{ marEM_PRINTrecords }}</div><div class="mntb_cell">{{ marEMrecords }}</div><div class="mntb_cell">{{ marEMCVSrecords }}</div></div>
+			            <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ marINT_WEBrecords }}</div><div class="mntb_cell">{{ marINT_PRINTrecords }}</div><div class="mntb_cell">{{ marINTrecords }}</div><div class="mntb_cell">{{ marINTCVSrecords }}</div></div>			           
+			        </div>
+			        <div id="04" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ aprEM_WEBrecords }}</div><div class="mntb_cell">{{ aprEM_PRINTrecords }}</div><div class="mntb_cell">{{ aprEMrecords }}</div><div class="mntb_cell">{{ aprEMCVSrecords }}</div></div>
+			            <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ aprINT_WEBrecords }}</div><div class="mntb_cell">{{ aprINT_PRINTrecords }}</div><div class="mntb_cell">{{ aprINTrecords }}</div><div class="mntb_cell">{{ aprINTCVSrecords }}</div></div>			           
+			        </div>
+			        <div id="05" class="totals_mntb">                          
+					    <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ mayEM_WEBrecords }}</div><div class="mntb_cell">{{ mayEM_PRINTrecords }}</div><div class="mntb_cell">{{ mayEMrecords }}</div><div class="mntb_cell">{{ mayEMCVSrecords }}</div></div>
+					    <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ mayINT_WEBrecords }}</div><div class="mntb_cell">{{ mayINT_PRINTrecords }}</div><div class="mntb_cell">{{ mayINTrecords }}</div><div class="mntb_cell">{{ mayINTCVSrecords }}</div></div>                     
+					</div>
+			        <div id="06" class="totals_mntb">                          
+			            <div class="mntb_row"><div class="mntb_cell">eyemagic</div><div class="mntb_cell">{{ junEM_WEBrecords }}</div><div class="mntb_cell">{{ junEM_PRINTrecords }}</div><div class="mntb_cell">{{ junEMrecords }}</div><div class="mntb_cell">{{ junEMCVSrecords }}</div></div>
+                        <div class="mntb_row"><div class="mntb_cell">internal</div><div class="mntb_cell">{{ junINT_WEBrecords }}</div><div class="mntb_cell">{{ junINT_PRINTrecords }}</div><div class="mntb_cell">{{ junINTrecords }}</div><div class="mntb_cell">{{ junINTCVSrecords }}</div></div>			           
+			        </div>
+
+			        <div class="boxer">
+						<div class="box-row">
+							<div class="box">eyemagic</div>
+							<div class="box"></div>
+							<div class="box"></div>
+							<div class="box"></div>
+							<div class="box"></div>
+						</div>
+						<div class="box-row">
+							<div class="box"></div>
+							<div class="box"></div>
+							<div class="box"></div>
+							<div class="box"></div>
+							<div class="box"></div>
+						</div>
+					</div> -->
+					<h4>june total = {{ countrecords }}</h4>
+					<h4>june internal = {{ junintrecords }}</h4>
+					<div id="chart_div" style="width: 1600px; height: 600px;"></div>
+					<h4>images processed - by month</h4>
+
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>january</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ janEM_WEBrecords }}</td><td>{{ janEM_PRINTrecords }}</td><td>{{ janEMrecords }}</td><td>{{ janEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ janINT_WEBrecords }}</td><td>{{ janINT_PRINTrecords }}</td><td>{{ janINTrecords }}</td><td>{{ janINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>february</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ febEM_WEBrecords }}</td><td>{{ febEM_PRINTrecords }}</td><td>{{ febEMrecords }}</td><td>{{ febEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ febINT_WEBrecords }}</td><td>{{ febINT_PRINTrecords }}</td><td>{{ febINTrecords }}</td><td>{{ febINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>march</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ marEM_WEBrecords }}</td><td>{{ marEM_PRINTrecords }}</td><td>{{ marEMrecords }}</td><td>{{ marEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ marINT_WEBrecords }}</td><td>{{ marINT_PRINTrecords }}</td><td>{{ marINTrecords }}</td><td>{{ marINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>april</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ aprEM_WEBrecords }}</td><td>{{ aprEM_PRINTrecords }}</td><td>{{ aprEMrecords }}</td><td>{{ aprEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ aprINT_WEBrecords }}</td><td>{{ aprINT_PRINTrecords }}</td><td>{{ aprINTrecords }}</td><td>{{ aprINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>may</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ mayEM_WEBrecords }}</td><td>{{ mayEM_PRINTrecords }}</td><td>{{ mayEMrecords }}</td><td>{{ mayEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ mayINT_WEBrecords }}</td><td>{{ mayINT_PRINTrecords }}</td><td>{{ mayINTrecords }}</td><td>{{ mayINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>june</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ junEM_WEBrecords }}</td><td>{{ junEM_PRINTrecords }}</td><td>{{ junEMrecords }}</td><td>{{ junEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ junINT_WEBrecords }}</td><td>{{ junINT_PRINTrecords }}</td><td>{{ junINTrecords }}</td><td>{{ junINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>july</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ julEM_WEBrecords }}</td><td>{{ julEM_PRINTrecords }}</td><td>{{ julEMrecords }}</td><td>{{ julEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ julINT_WEBrecords }}</td><td>{{ julINT_PRINTrecords }}</td><td>{{ julINTrecords }}</td><td>{{ julINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>august</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ augEM_WEBrecords }}</td><td>{{ augEM_PRINTrecords }}</td><td>{{ augEMrecords }}</td><td>{{ augEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ augINT_WEBrecords }}</td><td>{{ augINT_PRINTrecords }}</td><td>{{ augINTrecords }}</td><td>{{ augINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>september</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ sepEM_WEBrecords }}</td><td>{{ sepEM_PRINTrecords }}</td><td>{{ sepEMrecords }}</td><td>{{ sepEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ sepINT_WEBrecords }}</td><td>{{ sepINT_PRINTrecords }}</td><td>{{ sepINTrecords }}</td><td>{{ sepINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>october</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ octEM_WEBrecords }}</td><td>{{ octEM_PRINTrecords }}</td><td>{{ octEMrecords }}</td><td>{{ octEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ octINT_WEBrecords }}</td><td>{{ octINT_PRINTrecords }}</td><td>{{ octINTrecords }}</td><td>{{ octINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>november</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ novEM_WEBrecords }}</td><td>{{ novEM_PRINTrecords }}</td><td>{{ novEMrecords }}</td><td>{{ novEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ novINT_WEBrecords }}</td><td>{{ novINT_PRINTrecords }}</td><td>{{ novINTrecords }}</td><td>{{ novINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+				    <table data-toggle="table" data-query-params="queryParams" data-pagination="true" data-striped = "false"
+				        data-page-size = 25 data-show-refresh = 'false' data-show-toggle = 'false' data-search="false" class="striped">
+				        <thead>
+				        	<h5>december</h5>
+				            <tr>
+				                <th data-field="source"  data-sortable="false">source</th><th data-field="webimages"  data-sortable="false">webimages processed</th><th data-field="printimages"  data-sortable="false">printimages processed</th><th data-field="totalimages"  data-sortable="false">total images</th><th data-field="total sku's" data-sortable="false">total sku's</th>
+				            </tr>
+				        </thead>
+				        <tbody>
+				            <tr>
+				                <td>eyemagic</td><td>{{ decEM_WEBrecords }}</td><td>{{ decEM_PRINTrecords }}</td><td>{{ decEMrecords }}</td><td>{{ decEMCVSrecords }}</td>
+				            </tr>
+				            <tr>
+				                <td>internal</td><td>{{ decINT_WEBrecords }}</td><td>{{ decINT_PRINTrecords }}</td><td>{{ decINTrecords }}</td><td>{{ decINTCVSrecords }}</td>
+				            </tr>
+				           
+				        </tbody>
+				    </table>
+			    <!-- <table  
+			        data-toggle="table"  
+			        data-query-params="queryParams"
+			        data-pagination="true"
+			        data-striped = "false"
+			        data-page-size = 25
+			        data-show-refresh = 'false'
+			        data-show-toggle = 'false'
+			        data-search="false"
+			        class="striped">
+			        <thead>
+			            <tr>
+			                <th data-field="source"  data-sortable="true">source</th>
+			    			<th data-field="webimages"  data-sortable="false">webimages processed</th>
+			    			<th data-field="printimages"  data-sortable="true">printimages processed</th>
+			    			<th data-field="totalimages"  data-sortable="true">total images</th>
+			    			<th data-field="total sku's" data-sortable="true">total sku's</th>
+			            </tr>
+			        </thead>
+			        <div id="00" class="img_totals_tb">                          
+			            <tr><td>eyemagic</td><td>{{ cmthEM_WEBrecords }}</td><td>{{ cmthEM_PRINTrecords }}</td><td>{{ cmthEMrecords }}</td><td>{{ cmthEMCVSrecords }}</td></tr>
+			            <tr><td>internal</td><td>{{ cmthINT_WEBrecords }}</td><td>{{ cmthINT_PRINTrecords }}</td><td>{{ cmthINTrecords }}</td><td>{{ cmthINTCVSrecords }}</td></tr>			           
+			        </div>
+			        <tbody id="01" class="img_totals_tb" style="display:none">                          
+			            <tr class="show_rows"><td>eyemagic</td><td>{{ janEM_WEBrecords }}</td><td>{{ janEM_PRINTrecords }}</td><td>{{ janEMrecords }}</td><td>{{ janEMCVSrecords }}</td></tr>
+			            <tr class="show_rows"><td>internal</td><td>{{ janINT_WEBrecords }}</td><td>{{ janINT_PRINTrecords }}</td><td>{{ janINTrecords }}</td><td>{{ janINTCVSrecords }}</td></tr>			           
+			        </tbody>
+			        <tbody id="02" class="img_totals_tb" style="display:none">                          
+			            <tr class="show_rows"><td>eyemagic</td><td>{{ febEM_WEBrecords }}</td><td>{{ febEM_PRINTrecords }}</td><td>{{ febEMrecords }}</td><td>{{ febEMCVSrecords }}</td></tr>
+			            <tr class="show_rows"><td>internal</td><td>{{ febINT_WEBrecords }}</td><td>{{ febINT_PRINTrecords }}</td><td>{{ febINTrecords }}</td><td>{{ febINTCVSrecords }}</td></tr>			           
+			        </tbody>
+			        <tbody id="03" class="img_totals_tb" style="display:none">                          
+			            <tr class="show_rows"><td>eyemagic</td><td>{{ marEM_WEBrecords }}</td><td>{{ marEM_PRINTrecords }}</td><td>{{ marEMrecords }}</td><td>{{ marEMCVSrecords }}</td></tr>
+			            <tr class="show_rows"><td>internal</td><td>{{ marINT_WEBrecords }}</td><td>{{ marINT_PRINTrecords }}</td><td>{{ marINTrecords }}</td><td>{{ marINTCVSrecords }}</td></tr>			           
+			        </tbody>
+			        <tbody id="04" class="img_totals_tb" style="display:none">                          
+			            <tr class="show_rows"><td>eyemagic</td><td>{{ aprEM_WEBrecords }}</td><td>{{ aprEM_PRINTrecords }}</td><td>{{ aprEMrecords }}</td><td>{{ aprEMCVSrecords }}</td></tr>
+			            <tr class="show_rows"><td>internal</td><td>{{ aprINT_WEBrecords }}</td><td>{{ aprINT_PRINTrecords }}</td><td>{{ aprINTrecords }}</td><td>{{ aprINTCVSrecords }}</td></tr>			           
+			        </tbody>
+
+			    </table> -->
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+			    <h4>images processed - year to date</h4>
+
+			    <table  
+			        data-toggle="table"  
+			        data-query-params="queryParams"
+			        data-pagination="true"
+			        data-striped = "false"
+			        data-page-size = 25
+			        data-show-refresh = 'false'
+			        data-show-toggle = 'false'
+			        data-search="false"
+			        class="striped">
+			        <thead>
+			            <tr>
+			                <th data-field="source"  data-sortable="true">source</th>
+			    			<th data-field="webimages"  data-sortable="false">webimages processed</th>
+			    			<th data-field="printimages"  data-sortable="true">printimages processed</th>
+			    			<th data-field="totalimages"  data-sortable="true">total images</th>
+			    			<th data-field="total sku's"data-sortable="true">total sku's</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			                                      
+			            <tr>
+			                <td>eyemagic</td><td>{{ ytdEM_WEBrecords }}</td><td>{{ ytdEM_PRINTrecords }}</td><td>{{ ytdEMrecords }}</td><td>{{ ytdEMCVSrecords }}</td>
+			            </tr>
+			            <tr>
+			                <td>internal</td><td>{{ ytdINT_WEBrecords }}</td><td>{{ ytdINT_PRINTrecords }}</td><td>{{ ytdINTrecords }}</td><td>{{ ytdINTCVSrecords }}</td>
+			            </tr>
+			           
+			        </tbody>
+			    </table>
+			</div>		
+		</div>
+    </div>
+    <script>
+    function display_monthlies(val){
+    	$('.totals_mntb').hide();
+    	$('#'+val).show();
+    }
+
+    var $table = $('#table');
+
+    $(function () {
+    });
+    function queryParams() {
+        return {
+            type: 'owner',
+            sort: 'updated',
+            direction: 'desc',
+            per_page: 100,
+            page: 1
+        };
+    }
+	</script>
+{% endblock %}

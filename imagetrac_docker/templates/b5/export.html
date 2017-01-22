@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load b5_extras %}
+
+     {% block head_content %}
+     <style type="text/css">
+        .clearablefileinput{font-size:.6em;}
+        label{font-size: .8em;}
+     </style> 
+        {% endblock %}
+        {% block content %} 
+<iframe id="inbox_frame" src="" width="100%" height="100%"></iframe> 
+<div class="container tmarg">
+    <div class="row">
+
+
+            {% if records %}
+        <div class="col-md-12">
+          <div class="well">
+                    <table  
+                        <thead>
+                            <tr>
+                                <th data-field="filename"  data-sortable="true">filename</th>
+                                <th data-field="date"  data-sortable="true">export date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file_name, file_date in records.items %}                            
+
+                            <tr>
+                                <td>1{{ file_name }}</td>
+                                <td>2{{ file_date }}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                      </table>
+              {% else %}
+              {% endif %}
+          </div>
+        </div>
+      
+        
+    </div>
+</div>
+
+
+        {% endblock %}

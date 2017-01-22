@@ -1,0 +1,188 @@
+{% extends "base_nonav.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        body{padding-top: 10px;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+  <!--   <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe> -->
+    <div id="list_controls" class="container stage">
+        <div class="row searchform">
+            <div class="col-md-12">
+                <div class="well">
+                    
+                    <img src="{% static 'img/logo_141x38_b5.png' %}" />
+                    
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                {% if records or threcords %}
+            <div class="col-md-12">
+                <div class="well">
+                  <h4>product details</h4> 
+                    <table  id="product_table"
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-search="false">
+                        <thead style="max-width:1098px;">
+                            <tr>
+                                <th data-field="ad date"  data-sortable="false">ad date</th>
+                                <th data-field="first date"  data-sortable="false">first date</th>
+                                <th data-field="item"  data-sortable="false">item no</th>
+                                <th data-field="description"  data-sortable="false">description</th>
+                                <th data-field="buyer"  data-sortable="false">buyer</th>
+                                <th data-field="mfg"  data-sortable="false">mfg no</th>
+                                <th data-field="dc ordered" data-sortable="false">dc ordered</th>
+                                <th data-field="dc received" data-sortabler="false">dc received</th>
+                                <th data-field="to studio" data-sortable="false">to studio</th>
+                                <th data-field="processed" data-sortable="false">processed</th>
+                            </tr>
+                        </thead>
+                        <tbody style="max-width:1098px;">
+                            {% for record in records %}                            
+
+                            <tr>
+                                <td>{{ record.ad_date }}</td>
+                                <td>{{ record.first_date }}</td>
+                                <td><a href='/product/{{ record.item_no }}/'>{{ record.item_no }}</a></td>
+                                <td>{{ record.desc }}</td>
+                                <td>{{ record.buyer }}</td>
+                                <td>{{ record.mfg }}</td>
+                                <td>{{ record.order_date }}</td>
+                                <td>{{ record.received_dc }}</td>
+                                <td>{{ record.studio_out }}</td>
+                                <td>{{ record.confirmed_placed }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="well imagewell">
+                  <h4>images</h4> 
+                    <table id="image_tb" 
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-search="false">
+                        <thead style="max-width:1098px;">
+                            <tr>
+                                <!-- <th data-field="thumbnail"  data-sortable="false">thumbnail</th>
+                                <th data-field="filename"  data-sortable="true">filename</th> -->
+                            </tr>
+                        </thead>
+                        <tbody style="max-width:1098px;">
+                            <tr>
+                                {% for lgrecord in lgrecords %}
+                                <td>{{ lgrecord.mod_date }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr> 
+                                {% for threcord in threcords %}
+                                <td><img class="thumb_img" src="{{MEDIA_URL}}thumb/{{ threcord.filename }}" /></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for threcord in threcords %}
+                                <td><a href='{{MEDIA_URL}}thumb/{{ threcord.filename }}' class="image_tb_link">{{ threcord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for rgrecord in rgrecords %}
+                                <td><a href='{{MEDIA_URL}}regular/{{ rgrecord.filename }}' class="image_tb_link">{{ rgrecord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for lgrecord in lgrecords %}
+                                <td><a href='{{MEDIA_URL}}large/{{ lgrecord.filename }}' class="image_tb_link">{{ lgrecord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="well imagewell">
+                  <h4>print files associated with cvs: <span style="color:maroon;">{% with records|first as first_record %}{{ first_record.sku }}{% endwith %}</span> </h4> 
+                    <table id="printfile_tb" 
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-search="false">
+                        <thead>
+                            <tr>
+                                <th data-field="filename"  data-sortable="false">filename</th>
+                                <th data-field="mod_date"  data-sortable="false">modification date</th>
+                                <th data-field="path"  data-sortable="false">one image path</th>
+                            </tr>
+                        </thead>
+                        <tbody class="fixed-table-container">
+                            {% for printrecord in printrecords %}
+                            <tr>
+                                <td><a href='{{PRINTMEDIA_ROOT}}/printmedia/{{ printrecord.path }}{{ printrecord.filename }}' class="image_tb_link">{{ printrecord.filename }}</a></td>
+                                <td>{{ printrecord.mod_date }}</td>
+                                <td>{{ printrecord.path }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+                
+                {% else %}
+                {% endif %}
+
+                    <script>
+                    var $table = $('#table');
+
+                    $(function () {
+                    });
+                    function queryParams() {
+                        return {
+                            type: 'owner',
+                            sort: 'updated',
+                            direction: 'desc',
+                            per_page: 100,
+                            page: 1
+                        };
+                    }
+                    </script>
+                        
+
+                </div>
+            </div>
+        
+            
+        </div>  
+              
+    </div>
+{% endblock %}

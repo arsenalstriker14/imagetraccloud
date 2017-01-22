@@ -1,0 +1,177 @@
+{% if boxrecords %}
+            <div id="tlist_{{ boxrecord.id }}" class="tlist">
+                <table id="{{ boxrecord.name }}_table" 
+                    data-toggle="table"  
+                    data-query-params="queryParams"
+                    data-pagination="true"
+                    data-striped = "false"
+                    data-page-size = 5
+                    data-show-refresh = 'true'
+                    data-show-toggle = 'true'
+                    data-search="true"
+                    class="striped">
+                    <thead>
+                        <tr>
+                            <th data-field="box" data-sortable="true"> </th>
+                            <th data-field="priority" data-sortable="true">priority</th>
+                            <th data-field="from" data-sortable="true">from</th>
+                            <th data-field="name" data-sortable="false">job name</th>
+                            <th data-field="request" data-sortable="false">request</th>
+                            <th data-field="note" data-sortable="false">note</th>
+                            <th data-field="date_due" data-sortable="true">target return</th>
+                            <th data-field="accepted_by" data-sortable="false">accepted_by</th>
+                            <th data-field="status" data-sortable="true">status<th>
+                            <th data-field="completed_on" data-sortable="true">completed<th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if tmrecords %}
+                        {% for tmrecord in tmrecords %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ tmrecord.priority }}" id="_{{ tmrecord.id }}">
+                            <td>personal</td>
+                            <td class="priority_cell">{{ tmrecord.priority }}</td>
+                            <td><a href="mailto:{{ tmrecord.assigned_by.email }}?subject=taskbox:&nbsp;{{ tmrecord.long_sku }}-{{ tmrecord.cell_number }}&nbsp;&nbsp;{{ tmrecord.job_name }}">{{ tmrecord.assigned_by }}</a></td>
+                            
+                            <td><a href="{{ base_url }}/quickcard/{{ tmrecord.id }}/" class="" onclick="showQuickcard('{{ base_url }}/quickcard/{{ tmrecord.id }}');return(false);">{{ tmrecord.job_name }}</a></td>
+                            <td>{{ tmrecord.request }}</td>
+                            <td>{{ tmrecord.desc }}</td>
+                            <td>{{ tmrecord.date_due }}</td>
+                            <td><a href="mailto:{{ tmrecord.accepted_by.email }}?subject=taskbox:&nbsp;{{ tmrecord.long_sku }}-{{ tmrecord.cell_number }}&nbsp;&nbsp;{{ tmrecord.job_name }}">{{ tmrecord.accepted_by }}</a></td>
+                            <td class="status_cell">{{ tmrecord.status }}</td>
+                            <td>{{ tmrecord.completed_on }}</td>
+                            <!-- <td>{{ tmrecord.files }}</td> -->
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        
+                    
+                        
+
+                        {% for boxrecord in boxrecords|slice:":1" %}
+                        {% if box1s %}
+                        {% for box1 in box1s %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ box1.priority }}" id="_{{ box1.id }}">
+                            <td>{{ boxrecord.name }}</td>
+
+                            <td class="priority_cell">{{ box1.priority }}</td>
+                            <td><a href="mailto:{{ box1.assigned_by.email }}?subject=taskbox:&nbsp;{{ box1.long_sku }}-{{ box1.cell_number }}&nbsp;&nbsp;{{ box1.job_name }}">{{ box1.assigned_by }}</a></td>
+                            
+                            <td>{{ box1.job_name }}</td>
+                            <td>{{ box1.request }}</td>
+                            <td>{{ box1.desc }}</td>
+                            <td>{{ box1.date_due }}</td>
+                            <td><a href="mailto:{{ box1.accepted_by.email }}?subject=taskbox:&nbsp;{{ box1.long_sku }}-{{ box1.cell_number }}&nbsp;&nbsp;{{ box1.job_name }}">{{ box1.accepted_by }}</a></td>
+                            <td class="status_cell">{{ box1.status }}</td>
+                            <td> </td>
+                            <td>{{ box1.completed_on }}</td>
+                         </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+
+
+                        {% for boxrecord in boxrecords|slice:"1:2" %}
+                        {% if box2s %}
+                        {% for box2 in box2s %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ box2.priority }}" id="_{{ box2.id }}">
+                            <td>{{ boxrecord.name }}</td>
+
+                            <td class="priority_cell">{{ box2.priority }}</td>
+                            <td><a href="mailto:{{ box2.assigned_by.email }}?subject=taskbox:&nbsp;{{ box2.long_sku }}-{{ box2.cell_number }}&nbsp;&nbsp;{{ box2.job_name }}">{{ box2.assigned_by }}</a></td>
+                            
+                            <td>{{ box2.job_name }}</td>
+                            <td>{{ box2.request }}</td>
+                            <td>{{ box2.desc }}</td>
+                            <td>{{ box2.date_due }}</td>
+                            <td><a href="mailto:{{ box2.accepted_by.email }}?subject=taskbox:&nbsp;{{ box2.long_sku }}-{{ box2.cell_number }}&nbsp;&nbsp;{{ box2.job_name }}">{{ box2.accepted_by }}</a></td>
+                            <td class="status_cell">{{ box2.status }}</td>
+                            <td> </td>
+                            <td>{{ box2.completed_on }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+
+
+                        {% for boxrecord in boxrecords|slice:"2:3" %}
+                        {% if box3s %}
+                        {% for box3 in box3s %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ box3.priority }}" id="_{{ box3.id }}">
+                            <td>{{ boxrecord.name }}</td>
+
+                            <td class="priority_cell">{{ box3.priority }}</td>
+                            <td><a href="mailto:{{ box3.assigned_by.email }}?subject=taskbox:&nbsp;{{ box3.long_sku }}-{{ box3.cell_number }}&nbsp;&nbsp;{{ box3.job_name }}">{{ box3.assigned_by }}</a></td>
+                            
+                            <td>{{ box3.job_name }}</td>
+                            <td>{{ box3.request }}</td>
+                            <td>{{ box3.desc }}</td>
+                            <td>{{ box3.date_due }}</td>
+                            <td><a href="mailto:{{ box3.accepted_by.email }}?subject=taskbox:&nbsp;{{ box3.long_sku }}-{{ box3.cell_number }}&nbsp;&nbsp;{{ box3.job_name }}">{{ box3.accepted_by }}</a></td>
+                            <td class="status_cell">{{ box3.status }}</td>
+                            <td> </td>
+                            <td>{{ box3.completed_on }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+
+
+                        {% for boxrecord in boxrecords|slice:"3:4" %}
+                        {% if box4s %}
+                        {% for box4 in box4s %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ box4.priority }}" id="_{{ box4.id }}">
+                            <td>{{ boxrecord.name }}</td>
+
+                            <td class="priority_cell">{{ box4.priority }}</td>
+                            <td><a href="mailto:{{ box4.assigned_by.email }}?subject=taskbox:&nbsp;{{ box4.long_sku }}-{{ box4.cell_number }}&nbsp;&nbsp;{{ box4.job_name }}">{{ box4.assigned_by }}</a></td>
+                            
+                            <td>{{ box4.job_name }}</td>
+                            <td>{{ box4.request }}</td>
+                            <td>{{ box4.desc }}</td>
+                            <td>{{ box4.date_due }}</td>
+                            <td><a href="mailto:{{ box4.accepted_by.email }}?subject=taskbox:&nbsp;{{ box4.long_sku }}-{{ box4.cell_number }}&nbsp;&nbsp;{{ box4.job_name }}">{{ box4.accepted_by }}</a></td>
+                            <td class="status_cell">{{ box4.status }}</td>
+                            <td> </td>
+                            <td>{{ box4.completed_on }}</td>
+                         </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+
+
+                        {% for boxrecord in boxrecords|slice:"4:5" %}
+                        {% if box5s %}
+                        {% for box5 in box5s %}
+                        <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ box5.priority }}" id="_{{ box5.id }}">
+                            <td><a href="{% url 'taskmanager:edit_inboxentry' box5.id user.userprofile.id  %}"><input type="button" class="edit_btn" value="edit" /></a></td>
+
+                            <td class="priority_cell">{{ box5.priority }}</td>
+                            <td><a href="mailto:{{ box5.assigned_by.email }}?subject=taskbox:&nbsp;{{ box5.long_sku }}-{{ box5.cell_number }}&nbsp;&nbsp;{{ box5.job_name }}">{{ box5.assigned_by }}</a></td>
+                            
+                            <td>{{ box5.job_name }}</td>
+                            <td>{{ box5.request }}</td>
+                            <td>{{ box5.desc }}</td>
+                            <td>{{ box5.date_due }}</td>
+                            <td><a href="mailto:{{ box5.accepted_by.email }}?subject=taskbox:&nbsp;{{ box5.long_sku }}-{{ box5.cell_number }}&nbsp;&nbsp;{{ box5.job_name }}">{{ box5.accepted_by }}</a></td>
+                            <td class="status_cell">{{ box5.status }}</td>
+                            <td> </td>
+                            <td>{{ box5.completed_on }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        {% endif %}
+                        {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>                        
+                        
+            {% else %}
+            {% endif %}
+              

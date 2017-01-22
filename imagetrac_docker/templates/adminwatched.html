@@ -1,0 +1,190 @@
+{% extends "base_nonav.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        #div_id_item_no, #div_id_desc { position:relative; display:inline-block;font-size: .8em; width: 150px;}
+        #div_id_comments { position:relative; display:inline-block;font-size: .8em; max-width: 300px;}
+        textarea#id_comments{height:30px;font-size: 1em;}
+        input#id_item_no, input#id_desc, input#id_comments{height:30px; font-size: 1em;}
+        .disabled{background-color:#ff9900;color:#eee;border-radius: 4px;}
+        .not_received{background-color:#990000;color:#eee;border-radius: 4px;}
+        .received{background-color:#006600;color:#eee;border-radius: 4px;}
+        .status{text-align: center;font-weight:bold;}
+        #image_tb tbody{padding-bottom: 5px;}
+        #watch_tb {font-size:.9em;max-width:800px;}
+        #printfile_tb td{padding-right: 12px;}
+        #printfile_tb th{font-size:12px; color: #000;padding:5px 0;}
+        .fixed-table-container {
+            border: 0 solid #dddddd;
+            font-size: 12px;
+        }
+        .fixed-table-body{overflow-x: auto; overflow-y: auto; height: 100%;
+        }
+        .fixed-table-container tbody td {
+            border: 0 solid #dddddd;
+        }
+        #page_table{font-size: .9em;border: 0 solid #dddddd;}
+        .bootstrap-table .table, .bootstrap-table .table > tbody > tr > th, .bootstrap-table .table > tfoot > tr > th, .bootstrap-table .table > thead > tr > td, .bootstrap-table .table > tbody > tr > td, .bootstrap-table .table > tfoot > tr > td {
+            padding: 0px 2px !important; border: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th .th-inner {
+            line-height: 1;
+        }
+        .fixed-table-container thead th {
+            border-left: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th {
+            border-left: 0px solid #dddddd;
+        }
+        .bootstrap-table .table > thead > tr > th {
+            border-bottom: 0px solid #ddd;
+        }
+        #image_tb, #printfile_tb {font-weight: bold; color:maroon; border:none;}
+        #image_tb > tr, #printfile_tb > tr {padding:5px 2px;}
+        a.image_tb_link, a.printfile_tb_link {color:#4d8b20;margin-right:2px;}
+        .fixed-table-header{border:0 solid #fff;}
+        .fixed-table-footer{border:0 solid #fff;}
+        .thumb_img{padding:5px;border:1px solid #ddd;border-radius:6px;margin:2px 0;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <div id="list_controls" class="container stage">
+        <div class="row">
+               
+            
+            <div class="col-md-8">
+                <div class="well">
+                  <h5>{{ user.first_name }}'s watched images</h5> 
+                    <table id="watch_tb" 
+                            data-toggle="table"  
+                            data-pagination="false"
+                            data-search="false">
+                        <thead>
+                            <tr>
+                                <th>item no</th>
+                                <th>description</th>
+                                <th>status</th>
+                                <th>date placed</th>
+                                <th>comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                     {% if records %}
+                                     
+                                {% for record in records %}
+                            <tr>
+                                <td><a href='' onclick='get_sku();return(false);'>{{ record.item_no }}</a></td>
+                                <td>{{ record.desc }}</td>
+                                <td class="status"></td>
+                                <td class="marker">{{ record.confirmed_placed }}</td>
+                                <td>{{ record.comments }}</td>
+                                <td><a href="/edit_adminwatched/{{ record.id }}/{{ user.id }}/"><input type="button" class="edit_btn" value="edit" /></a></td>
+                                
+                            </tr>
+                                {% endfor %}
+                                {% else %}
+                                {% endif %}
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+        </div>  
+
+        <div class="row">            
+            <div class="col-md-8">
+                <div class="well">
+                  <h5>add image</h5> 
+                    <form id="watch_form" action="." method="POST">{% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div>
+                            <table>
+                                <tr>
+                                    <td class="hidden"> {{ form.watched_by|as_crispy_field:"bootstrap" }}</td>
+                                    <td> {{ form.item_no|as_crispy_field:"bootstrap" }}</td>
+                                    <td> {{ form.desc|as_crispy_field:"bootstrap" }}</td>
+                                    <td>{{ form.comments|as_crispy_field:"bootstrap" }}</td>
+                                </tr>
+                            </table>
+                            <table id="submit_tb">
+                                    <tr>
+                                        <td align="left" style="padding-top:10px;margin-left:0;"><input id="inbox_submit_btn" type="submit" value="add" />
+                                        </td>
+                                        <td style="padding-top:10px;margin-left:0;"><input id="inbox_delete_btn" name="delete" type="submit" value="delete" /></td>
+                                    </tr>
+                            </table>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+          
+        </div>      
+                
+                    <script>
+                    function get_sku(){
+                        sku = $(this).html().slice(0, 15)
+                        href = "/product/" + sku + "/" + $(this).html()
+                    }
+                    function mark_status(){
+                        $('.marker').each(function(index, element){
+                            var status = $(this).siblings('.status');
+                            if ($(this).html() && $(this).html() != 'None'){
+                                status[0].innerHTML = "IN";
+                                status[0].parentElement.className = ('received');
+                            }else{
+                                status[0].innerHTML = "OUT";
+                                status[0].parentElement.className = ('not_received');
+
+                            }
+                             
+                        });
+                       
+                    }
+                    mark_status();
+                    var $table = $('#table');
+
+                    $(function () {
+                    });
+                    function queryParams() {
+                        return {
+                            type: 'owner',
+                            sort: 'updated',
+                            direction: 'desc',
+                            per_page: 100,
+                            page: 1
+                        };
+                    }
+                    </script>
+                        
+
+           
+        
+            
+          
+              
+    </div>
+{% endblock %}

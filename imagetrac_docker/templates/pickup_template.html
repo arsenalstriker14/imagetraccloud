@@ -1,0 +1,344 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        .not_received{background-color:#990000;color:#eee;border-radius: 4px;}
+        .received{background-color:#006600;color:#eee;border-radius: 4px;}
+        .buyer_sample{background-color:#FF9900;color:#eee;border-radius: 4px;}
+        .dimmed{background-color:#bbb;color:#eee;border-radius: 4px;}
+        .status{text-align: center;font-weight:bold;}
+        .stat_in{position: relative;display: inline-block;width:15px;height:10px;moz-box-radius, webkit-box-radius, box-radius :4px;background-color: #006600}
+        .stat_out{position: relative;display: inline-block;width:15px;height:10px;moz-box-radius, webkit-box-radius, box-radius :4px;background-color: #990000}
+        h6{margin: 15px 0 0 0;}
+        #image_tb tbody{padding-bottom: 5px;}
+        #watch_tb {font-size:1em;}
+        
+        .fixed-table-container {
+            border: 0 solid #dddddd;
+            font-size: .9em;
+        }
+        .fixed-table-container tbody td {
+            border: 0 solid #dddddd;
+        }
+
+        #page_table{font-size: .9em;border: 0 solid #dddddd;}
+        .bootstrap-table .table, .bootstrap-table .table > tbody > tr > th, .bootstrap-table .table > tfoot > tr > th, .bootstrap-table .table > thead > tr > td, .bootstrap-table .table > tbody > tr > td, .bootstrap-table .table > tfoot > tr > td {
+            padding: 0px 2px !important; border: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th .th-inner {
+            line-height: 1;
+        }
+        .fixed-table-container thead th {
+            border-left: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th {
+            border-left: 0px solid #dddddd;
+        }
+        .bootstrap-table .table > thead > tr > th {
+            border-bottom: 0px solid #ddd;
+        }
+        #list_controls.container.stage{width:1600px; font-size: .9em; line-height: 1.2;}
+        
+            
+        /*summary::-webkit-details-marker {
+            color:blue;
+        }
+
+        details[open] summary::-webkit-details-markeblue#0000FF;
+        }*/
+        /*table.striped > tbody > tr:nth-of-type(2n+1) {
+            background-color: rgb(249, 249, 249);
+        }*/
+        .disabled{background-color:#cc00ff;color:#eee;webkit-border-radius, moz-border-radius: 4px;}
+        .awaiting{background-color:#006600;color:#eee;webkit-border-radius, moz-border-radius: 4px;}
+        .to_studio{background-color:#66CC66;opacity: 0.7;color:#eee;webkit-border-radius, moz-border-radius: 4px;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="container stage">
+        {% if messages %}
+        <div class="row">
+            <div class="col-sm-12">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% if user.is_staff %}
+        <div class="row searchform">
+            <div class="col-md-8">
+                <div class="well">
+                <h6>watched files</h6>
+                    <table id="watch_tb" 
+                            data-toggle="table"  
+                            data-pagination="false"
+                            data-search="false">
+                        <thead>
+                            <tr>
+                                <th>watcher</th>
+                                <th>item no</th>
+                                <th>description</th>
+                                <th>status</th>
+                                <th>date placed</th>
+                                <th>comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                     {% if watchrecords %}
+                                {% for watchrecord in watchrecords %}
+                            <tr>
+                                <td>{{ watchrecord.watched_by }}</a></td>
+                                <td><a href='' onclick='get_sku();return(false);'>{{ watchrecord.item_no }}</a></td>
+                                <td>{{ watchrecord.desc }}</td>
+                                <td class="status"></td>
+                                <td class="marker">{{ watchrecord.confirmed_placed }}</td> 
+                                <td>{{ watchrecord.comments }}</td>                               
+                            </tr>
+                                {% endfor %}
+                                {% else %}
+                                {% endif %}
+                        </tbody>
+                    </table>  
+                    <h6>inbox urgent</h6>
+                    <table id="inbox_tb" 
+                            data-toggle="table"  
+                            data-pagination="false"
+                            data-search="false">
+                        <thead>
+                            <tr>
+                                <th>priority</th>
+                                <th>from</th>
+                                <th>job name</th>
+                                <th>request</th>
+                                <th>description</th>
+                                <th>target return</th>
+                                <th>accepted_by</th>
+                                <th>status<th>
+                                <th>completed<th>
+                                <th>files<th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                     {% if tmrecords %}
+                            {% for tmrecord in tmrecords %}
+                            <tr class="list_row {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %} {{ tmrecord.priority }}" id="_{{ tmrecord.id }}">
+                                <td class="priority_cell"><div class="stat_out"></div>&nbsp;{{ tmrecord.priority }}</td>
+                                <td><a href="mailto:{{ tmrecord.assigned_by.email }}?subject=taskbox:&nbsp;{{ tmrecord.long_sku }}-{{ tmrecord.cell_number }}&nbsp;&nbsp;{{ tmrecord.job_name }}">{{ tmrecord.assigned_by }}</a></td>
+                                
+                                <td><a href="{{ base_url }}/quickcard/{{ tmrecord.id }}/" class="" onclick="showQuickcard('{{ base_url }}/quickcard/{{ tmrecord.id }}');return(false);">{{ tmrecord.job_name }}</a></td>
+                                <td>{{ tmrecord.request }}</td>
+                                <td>{{ tmrecord.desc }}</td>
+                                <td>{{ tmrecord.date_due }}</td>
+                                <td><a href="mailto:{{ tmrecord.accepted_by.email }}?subject=taskbox:&nbsp;{{ tmrecord.long_sku }}-{{ tmrecord.cell_number }}&nbsp;&nbsp;{{ tmrecord.job_name }}">{{ tmrecord.accepted_by }}</a></td>
+                                <td class="status_cell">{{ tmrecord.status }}</td>
+                                <td>{{ tmrecord.completed_on }}</td>
+                                <td>{{ tmrecord.files }}</td>
+                            
+                                    {% endfor %}
+                                    {% else %}
+                                    {% endif %}
+                            
+                        
+                            </tr>
+                        </tbody>
+                    </table>  
+                  
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="well">
+                    
+                    {% crispy form %}
+                   <!-- <details>
+                        <summary>Page Information</summary>
+                        <p>Entering a client name or job number in the main search field yields post pages and records associated with your search term. 
+                        <p>Entering a valid job number in the upper search field enables the QuckPost module, while entering a job number in the upper search field AND choosing a client from the pulldown menu will enable the Multipost module. 
+                        <p>Finally, track your specific tasks via the Taskmanager module.
+                    </details> -->
+                    
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row searchform">
+            <div class="col-md-12">
+                <div class="well">
+                    
+                    {% crispy form %}
+                   <!-- <details>
+                        <summary>Page Information</summary>
+                        <p>Entering a client name or job number in the main search field yields post pages and records associated with your search term. 
+                        <p>Entering a valid job number in the upper search field enables the QuckPost module, while entering a job number in the upper search field AND choosing a client from the pulldown menu will enable the Multipost module. 
+                        <p>Finally, track your specific tasks via the Taskmanager module.
+                    </details> -->
+                    
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+                {% if records %}
+            <div class="col-md-12">
+                <div class="well">
+                  <h4>pickup list</h4> 
+                    <table class="color_grid">
+                            {% for cgrecord in cgrecords  %}
+                        <tr>
+                            <td><div class="cgbox" style="background-color:#{{ cgrecord.hexcode }};"></div></td><td class="cg_desc">{{ cgrecord.description }}</td>
+                        </tr>
+                            {% endfor %}
+                    </table>
+                    <table  
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-striped = "false"
+                            data-page-size = 100
+                            data-show-refresh = 'true'
+                            data-show-toggle = 'true'
+                            data-search="true"
+                            class="striped">
+                        <thead>
+                            <tr>
+                                <th data-field="first"  data-sortable="true">fr date</th>
+                                <th data-field="ad date"  data-sortable="true">ad date</th>
+                                <th data-field="item"  data-sortable="true">item</th>
+                                <th data-field="manufacture"  data-sortable="true">mfg</th>
+                                <th data-field="description"  data-sortable="true">description</th>
+                                <th data-field="order_date" data-sortable="true">dc ordered</th>
+                                <th data-field="received_studio" data-sortable="true">dc received</th>
+                                <th data-field="received_buyer" data-sortable="true">buyer sample</th>
+                                <th data-field="studio_out" data-sortable="true">to studio</th>
+                                <th data-field="confirmed_placed" data-sortable="true">processed</th>
+                                <th data-field="availability" class="hidden">file na</th>
+                                <th data-field="availability" class="">rec other</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}                            
+
+                            <tr>
+                                <td>{{ record.first_date }}</td>
+                                <td>{{ record.ad_date }}</td>
+                                <td class="item"><a href='/product/{{ record.sku }}/{{ record.item_no }}' onclick="showConsole('/product/{{ record.sku }}/{{ record.item_no }}');return(false);">{{ record.item_no }}</a></td>
+                                <td>{{ record.mfg }}</td>
+                                <td>{{ record.desc }}</td>
+                                <td>{{ record.order_date }}</td>
+                                <td>{{ record.received_dc }}</td>
+                                <td class ="buyer">{{ record.received_buyer }}</td>
+                                <td class="studio">{{ record.studio_out }}</td>
+                                <td class="processed">{{ record.confirmed_placed }}</td>
+                                <td class="availability hidden">{{ record.na }}</td>
+                                <td class="">{{ record.received_other }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            
+            
+                    
+
+                    <script>
+                    var $table = $('#table');
+
+                    $(function () {
+                    });
+                    function queryParams() {
+                        return {
+                            type: 'owner',
+                            sort: 'updated',
+                            direction: 'desc',
+                            per_page: 100,
+                            page: 1
+                        };
+                    }
+                    function highlightRow(){
+                        var studios = document.querySelectorAll('.studio');
+                        var targets = document.querySelectorAll('.availability');
+                        var buyers = document.querySelectorAll('.buyer');
+                        var confirmeds = document.querySelectorAll('.processed');
+                        var items = document.querySelectorAll('.item');
+                        for (var i=0; i<confirmeds.length; i++){
+
+                            if ((confirmeds[i].innerHTML == 'None') || (confirmeds[i].childNodes.length === 0)){
+                                confirmeds[i].parentElement.className = (' ');
+                                confirmeds[i].parentElement.className = ('awaiting');
+                            }
+                            if (studios[i].innerHTML != 'None'){
+                                studios[i].parentElement.className = (' ');
+                                studios[i].parentElement.className = ('to_studio');
+                            }
+                            if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].childNodes.length > 0)){
+                                confirmeds[i].parentElement.className = (' ');
+                            }
+                            
+                        }
+                        for (var i=0; i<buyers.length; i++){
+                            if (buyers[i].innerHTML)
+                            if ((buyers[i].innerHTML == 'X') || (buyers[i].innerHTML == 'x')){
+                                buyers[i].parentElement.className = ('buyer_sample');
+                            }
+                            
+                        }
+                        for (var i=0; i<targets.length; i++){
+                            if (targets[i].innerHTML)
+                            if (targets[i].innerHTML == 'True'){
+                                targets[i].parentElement.className = ('disabled');
+                            }
+                            
+                        }
+                        for (var i=0; i<confirmeds.length; i++){
+                            if ((confirmeds[i].innerHTML != 'None') && (targets[i].parentElement.className != 'disabled')){
+                                confirmeds[i].parentElement.className = (' ');
+                            }
+                            
+                        }
+                        for (var i=0; i<items.length; i++){
+                            if (items[i].firstChild.innerHTML.length < 19){
+                                items[i].parentElement.className = (' ');
+                                items[i].parentElement.className = ('dimmed');
+                            }
+                            
+                        }
+                    }
+                    highlightRow();
+                    </script>
+                  
+
+                </div>
+            </div>
+        {% else %}
+        {% endif %}
+            
+        </div>  
+              
+    </div>
+{% endblock %}

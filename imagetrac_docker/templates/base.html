@@ -1,0 +1,237 @@
+{% load staticfiles i18n %}
+{% load b5_extras %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}b5imagetrac cloud{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+    {% block css %}
+    <!-- Latest compiled and minified Bootstrap 4 Alpha 4 CSS -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous"> -->
+    
+    <!-- Latest compiled and minified Bootstrap 3 CSS -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ -->
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    
+    <!-- This file stores project-specific CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">  
+    <link rel="stylesheet" href="{% static 'css/bootstrap-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.structure.css' %}">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <style>
+    /*li.dropdown{position:relative; display:inline-block; max-width:200px;}
+    .dropdown{position:relative; display:inline-block;}
+    a.nav-link{font-size:.9em;}
+    .nav{position:relative; display:inline-block; max-width: 800px;}
+    .container{width:auto;}*/
+    .title_blurb{display:inline; font-size: 4em; font-weight: bold; color:#999;letter-spacing: -1px;}
+    .title_span1{display:inline; font-size: 90%; color:#ff9900;letter-spacing: -1px;}
+    .title_blurb_container{margin-top: 70px;}
+    </style>
+
+    <script src="{% static 'js/vendor/modernizr-2.8.3-respond-1.4.2.min.js' %}"></script>
+    <script src="{% static 'js/vendor/jquery-1.11.3.js' %}"></script>
+    <script src="{% static 'jquery-ui/jquery-ui.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  
+    {% endblock %}
+    {% block head_content %}{% endblock %}
+  </head>
+
+  <body onload="mark_status();">
+
+    <!-- <div class="m-b-1"> -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+          <time></time>
+          <a class="navbar-brand" href="/main/">b5<span style="font-size:.8em;color:#ff9900;font-weight:bold;">imagetrac</span><span style="font-size:.8em;color:lightblue;font-weight:bold;"> cloud</span></a>
+        </div>
+          
+  {% if request.user.is_authenticated %}
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.first_name }}&nbsp;{{ user.last_name }}<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                      <!-- <li><a href="{{ base_url }}/user/password/reset/" class="">change password</a></li> -->
+                      <li class="nav-item">
+                        <a class="dropdown-item" href="{% url 'users:update' %}">My Info</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="dropdown-item" href="{% url 'account_email' %}">E-Mail</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+                      </li>    
+                  </ul>
+              </li>
+
+            {% if user.is_staff %}
+                    <li class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item"><a href="{{ base_url }}/docs/system" class="">docs: itrac system</a></li>
+                            <li class="dropdown-item"><a href="{{ base_url }}/docs/deploy" class="">docs: image deployment</a></li>
+                        </ul>
+                    </li>
+                    
+                     
+                    <li class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Reports<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{ base_url }}/export-pickup/{{ request.GET.query }}" class="">export pickup list</a></li> 
+                            <li><a href="{{ base_url }}/export-required/{{ request.GET.query }}" class="">required image list</a></li> 
+                            <li><a href="{{ base_url }}/export/unavailable" class="">unavailable from vendor</a></li>
+                            <li><a href="{{ base_url }}/export/vendor" class="">nike/ua report</a></li>
+                            <li><a href="{{ base_url }}/export/{{ request.GET.query }}" class="">export query set</a></li>
+                        </ul>
+                    </li>
+                    
+                    {% else %}
+                    {% endif %}
+                   
+
+
+                    <li class="dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Screens<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="menu-item "><a href="{{ base_url }}/adscreen/" class="">ad screen</a></li>
+                            <li class="menu-item "><a href="{{ base_url }}/rumbasearch/" class="">quik rumba</a></li>
+                            <li class="menu-item dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">first receipts</a>
+                                <ul class="dropdown-menu">
+                                    <li class="menu-item "><a href="{{ base_url }}/first/" class="">view search</a></li>
+                                    <li><a href="{{ base_url }}/export-daily/{{ request.GET.query }}" class="">export daily</a></li>
+                                </ul>
+                            </li> 
+                        </ul>
+                    </li>
+
+
+  {% endif %}
+
+            </ul>
+
+            <ul class="nav navbar-nav pull-xs-right">
+              {% if request.user.is_authenticated %}
+                
+              {% else %}
+                <li class="nav-item">
+                  <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+                </li>
+                <li class="nav-item">
+                  <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+                </li>
+              {% endif %}
+            </ul>
+            <form class="navbar-form navbar-right" role="form">      
+              <div class="form-group">
+                  <input id="job_id" type="text" placeholder="enter searchstring" class="form-control">
+              </div>
+              <button type="submit" id="search_button" href="{{ base_url }}/quicksearch/" class="btn btn-success" name="quicksearch" onclick="processJobNumber();return(false);">image search
+              </button>   
+              {% if request.user|has_group:"production" %}                
+              <button id="watch_button" href="{{ base_url }}/hotlist/" class="btn btn-success" onclick="watchConsole('{{ base_url }}/hotlist/');return(false);">hotlist
+              </button> 
+              {% endif %}
+              <!-- {% if user.is_staff %} -->
+              <!-- <button id="edit_button" href="{% url 'b5:multipost' %}" class="btn btn-success" onclick="editAdSheet('{% url 'b5:multipost' %}');return(false);">add/edit adsheet records
+              </button> 
+              {% endif %} -->
+              <button id="inbox_button" href="{{ base_url }}/taskmanager/display/{{ user.userprofile.id }}/" class="btn btn-success" onclick="showDashboard();return(false);">taskmanager
+              </button>  
+          </form>
+        </div>
+      </nav>
+    <!-- </div> -->
+
+   <!--  <div class="container"> -->
+
+      {% if messages %}
+          {% for message in messages %}
+              <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+          {% endfor %}
+      {% endif %}
+
+      {% block content %}
+        {% if not authenticated %}
+        <div class="container title_blurb_container">
+          <div class="row col-md-6">
+            <h1 class="title_blurb">b5<span class="title_span1">imagetrac</span></h1>
+          </div>
+        </div>
+        {% endif %}
+      {% endblock content %}
+
+    <!-- </div>  /container -->
+    <footer>
+        <div class="container">
+        </div>
+    </footer>
+
+    {% block modal %}{% endblock modal %}
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    {% block javascript %}
+      <!-- Required by Bootstrap v4 Alpha 4 -->
+     <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/js/bootstrap.min.js" integrity="sha384-VjEeINv9OSwtWFLAtmc4JCtEJXXBub00gtSnszmspDLCtC0I4z4nqz7rEFbIZLLU" crossorigin="anonymous"></script>
+ -->
+      <!-- Your stuff: Third-party javascript libraries go here -->
+
+      <!-- place project specific Javascript in this file -->
+      
+      
+      <script type="text/javascript">
+        $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+            // Avoid following the href location when clicking
+            event.preventDefault(); 
+            // Avoid having the menu to close when clicking
+            event.stopPropagation(); 
+            // If a menu is already open we close it
+            //$('ul.dropdown-menu [data-toggle=dropdown]').parent().removeClass('open');
+            // opening the one you clicked on
+            $(this).parent().addClass('open');
+
+            var menu = $(this).parent().find("ul");
+            var menupos = menu.offset();
+          
+            if ((menupos.left + menu.width()) + 30 > $(window).width()) {
+                var newpos = - menu.width();      
+            } else {
+                var newpos = $(this).parent().width();
+            }
+            menu.css({ left:newpos });
+
+        });
+        </script>
+      
+
+    {% endblock javascript %}
+  </body>
+</html>
+ 

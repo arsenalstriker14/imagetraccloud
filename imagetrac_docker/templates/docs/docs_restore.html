@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+{% block head_content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion({
+      heightStyle: "content"
+    });
+  });
+</script>
+<style type="text/css">
+	#accordion{margin-top:15px;}
+	td{padding:10px;}
+	.sub{line-height: 1.5;}
+	.ui-widget-content{color:#555;}
+	.ui-widget{font-family:Helvetica, Arial, sans-serif;}
+	.ui-helper-reset{font-size:1em;}
+	.half_copy_box{position: relative;display: block;max-width:1000px;margin-bottom:10px;}
+	.extra_clearance{padding-bottom:35px;}
+	.clear_both{margin:15px 0 0 0;}
+	.super_s{font-size: .8em;line-height: 2;}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+	<div class="row">
+		<h2>Understanding How Backup Works</h2>
+		<p>The database backup is managed by navicat: </p>
+		<p class="bold sub">The basic steps are as follows:</p>
+		<ul>
+			<li>backup</li>
+			<li>archival</li>
+			<li>restore</li>
+		</ul>
+	</div>
+    <div class="row">
+        <div class="col-sm-12">
+        	<div id="accordion">
+				<h3>running the backup</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>the navicat software is configured to create a backup file once a week and store it in "/Users/imagetracdb/Library/Application Support/PremiumSoft CyberTech/Navicat for PostgreSQL/localhost/b5_db/public/"</td>
+							<td><img src="{% static 'img/docs/backup/importer.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>it runs Thursdays at 6pm:</td>
+							<td><img src="{% static 'img/docs/backup/schedule.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>backups can be manually run by clicking the "Backup" menu bar icon:</td>
+							<td><img src="{% static 'img/docs/backup/manual.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>and pressing the "Start" icon in the footer bar:</td>
+							<td><img src="{% static 'img/docs/backup/manual2.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>archiving the result</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>the imagetracdb server station runs a scheduled job that copies new backup files from the local navicat location to the  "/Volumes/ADVERTISING/Inserts/IMAGETRAC/backup/" directory. This is the network backup archive.</td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/backup/archive.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>restoring from backup</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>the available backup jobs are displayed under the "Backup" menu tab (make sure "Backups" is also selected on the sidebar at left):</td><td></td>
+							<td></td><td><img src="{% static 'img/docs/backup/newavail.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>if the backup you'd like to restore isn't displayed, it likely isn't in the local navicat environment. Drag a copy from the network archive (/Volumes/ADVERTISING/Inserts/IMAGETRAC/backup/)...</td><td></td>
+							<td></td><td><img src="{% static 'img/docs/backup/archive.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>...to the local navicat backup location (/Users/imagetracdb/Library/Application Support/PremiumSoft CyberTech/Navicat for PostgreSQL/localhost/b5_db/public/). Then refresh the database by clicking the "Refresh" icon in the footer - or by control-clicking the b5_db icon in the sidebar, and closing/re-opening the database:</td><td></td>
+							<td></td><td><img src="{% static 'img/docs/backup/close.png' %}" /><img src="{% static 'img/docs/backup/open.png' %}" /></td>
+						</tr>
+						<tr>
+							<td>now double-click the backup you'd like to restore, then click "Start" in the footer:</td><td></td>
+							<td></td><td><img src="{% static 'img/docs/backup/chooseit.png' %}" /><img src="{% static 'img/docs/backup/restore.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				
+			</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

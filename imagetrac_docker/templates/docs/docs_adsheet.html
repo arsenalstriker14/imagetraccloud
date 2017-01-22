@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+{% block head_content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion({
+      heightStyle: "content"
+    });
+  });
+</script>
+<style type="text/css">
+	#accordion{margin-top:15px;}
+	td{padding:10px;}
+	.sub{line-height: 1.5;}
+	.ui-widget-content{color:#555;}
+	.ui-widget{font-family:Helvetica, Arial, sans-serif;}
+	.ui-helper-reset{font-size:1em;}
+	.half_copy_box{position: relative;display: block;max-width:1000px;margin-bottom:10px;}
+	.extra_clearance{padding-bottom:35px;}
+	.clear_both{margin:15px 0 0 0;}
+	.super_s{font-size: .8em;line-height: 2;}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+	<div class="row">
+		<h2>Adding an Adsheet</h2>
+		<p>These are the instructions for processing individual adsheet files: </p>
+		<p class="bold sub">The basic steps are as follows:</p>
+		<ul>
+			<li>rename/place the .xlsx file</li>
+			<li>run the adsheet.py format utility</li>
+			<li>run the import_adsheet navicat scheduled import job</li>
+		</ul>
+	</div>
+    <div class="row">
+        <div class="col-sm-12">
+        	<div id="accordion">
+				<h3>prepare the file</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>Rename the dated xlsx file to "adsheet.xlsx" (eg. "8-AUGUST 14-2016.xlsx" becomes "adsheet.xlsx". Move the file to ADVERTISING/Inserts/MAGETRAC/csv (overwriting the existing one in this directory).</td>
+							<td><img src="{% static 'img/docs/adsheet/adsheet.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>run the format utility</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>from the terminal (shell) on the server workstion, run <span class="bold">adsheet.py. </span>When prompted, enter the ad date in the DDMMYY format.&nbsp;&nbsp;<img src="{% static 'img/docs/adsheet/date.png' %}" /></td><td></td>
+						</tr>
+						<tr>
+							<td>Then (in CAPS), enter the ad version (PRE PRE, PRE or FINAL)&nbsp;&nbsp;<img src="{% static 'img/docs/adsheet/version.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>importer</h3>
+				<div>
+				<tr>
+					<td>
+						Find the "import_adsheet" task in navicat. Double click the icon, then press "start" to initiate the task.<br /><br />
+					</td><td></td>
+					<td></td><td><img src="{% static 'img/docs/adsheet/importer.png' %}" /></td>
+				</tr>
+				<tr>
+					<td>
+						<br /><br />
+					</td><td></td>
+					<td><img src="{% static 'img/docs/adsheet/runscreen.png' %}" /></td><td></td>
+				</tr>
+				
+				</div>
+				
+			</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

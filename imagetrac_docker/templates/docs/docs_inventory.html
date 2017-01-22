@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+{% block head_content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion({
+      heightStyle: "content"
+    });
+  });
+</script>
+<style type="text/css">
+	#accordion{margin-top:15px;}
+	td{padding:10px;}
+	.sub{line-height: 1.5;}
+	.ui-widget-content{color:#555;}
+	.ui-widget{font-family:Helvetica, Arial, sans-serif;}
+	.ui-helper-reset{font-size:1em;}
+	.half_copy_box{position: relative;display: block;max-width:1000px;margin-bottom:10px;}
+	.extra_clearance{padding-bottom:35px;}
+	.clear_both{margin:15px 0 0 0;}
+	.super_s{font-size: .8em;line-height: 2;}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+	<div class="row">
+		<h2>Updating Inventory Data</h2>
+		<p>These are the instructions for processing "the daily photo audit file": </p>
+		<p class="bold sub">The basic steps are as follows:</p>
+		<ul>
+			<li>convert the .xlsx file to csv</li>
+			<li>add utf-8 encoding to the csv file</li>
+			<li>run the quantities.py format utility</li>
+			<li>run the update_inventory navicat scheduled import job</li>
+		</ul>
+		<p class="bold sub">necesary software:</p>
+		<ul>
+			<li>MS Excel</li>
+			<li>Sublime Text (or similar code editor)</li>
+		</ul>
+	</div>
+    <div class="row">
+        <div class="col-sm-12">
+        	<div id="accordion">
+				<h3>convert the file</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>Open the daily photo audit file in Excel. Save the file in the <span class="bold">windows comma seperated values (csv) </span>format; name it "universe_wcsv.csv", and save it to ADVERTISING/Inserts/MAGETRAC/csv (overwriting the existing one in this directory).</td>
+							<td><img src="{% static 'img/docs/inventory/windowscsv.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>add utf-8 encoding</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>open the newly created "universe_wcsv.csv" in Sublime Text. Simply resave the file with UTF-8 encoding: </td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/inventory/utf8.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>quantities.py</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>from the terminal (shell) on the server workstion, run <span class="bold">quantities.py</span><img src="{% static 'img/docs/inventory/quantities.png' %}" /></td><td></td>
+							<td></td><td><img src="{% static 'img/docs/inventory/quantities2.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>importer</h3>
+				<div>
+				<tr>
+					<td>
+						Find the "update_inventory" task in navicat. Double click the icon, then press "start" to initiate the task.<br /><br />
+					</td><td></td>
+					<td></td><td><img src="{% static 'img/docs/inventory/update_inv.png' %}" /></td>
+				</tr>
+				<tr>
+					<td>
+						<br /><br />
+					</td><td></td>
+					<td><img src="{% static 'img/docs/inventory/update_inv2.png' %}" /></td><td></td>
+				</tr>
+				
+				</div>
+				
+			</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

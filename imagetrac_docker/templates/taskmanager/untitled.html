@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load taskbox_tags %}
+<head>
+    <title></title>
+    <script src="/static/js/vendor/jquery-1.11.3.js"></script>
+    <script src="/static/jquery-ui/jquery-ui.js"></script>
+    <style>
+        /*#taskbox_form{
+            font-size:70%;
+        }*/
+        #tbox_menu{position: relative; display: inline-block; margin: 0 auto;padding:0;}
+        #submit_tb{margin-top:40px;}
+        .success{position:absolute;display:block;height:30px;width:100%; top:-50px;background-color: #ff9900; color:maroon; font-size: 1.2em;font-weight: bold;text-align: center;line-height: 2;}
+        .urgent{background-color: #FC3838;}
+        .container{width: 1600px;}
+        .stage{margin:0 auto;}
+        .high{background-color: #F2CBCB}
+        .low{background-color: #D8E8E8;}
+        .tab_row{margin:20px 0;padding:10px 15px 0 15px;border-radius: 6px;}
+        .tm_form_row{padding:15px 15px 0 15px;border-radius: 6px;background-color: #eee;}
+        .odd{background-color: #ddd}
+        .even{background-color: #efefef}
+        .form-control {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1;
+            height:80%;
+            margin-bottom: 7px;
+        }
+        .row.no-gutter [class*='col-']:not(:first-child),.row.no-gutter [class*='col-']:not(:last-child) {
+         padding-right:2px;
+         padding-left:2px;
+        }
+        .display_table a{color:#336633;}
+        .display_table a:hover{color:#fff;}
+        
+        .placeholder{position: relative;display: inline-block;height:53px;}
+         input#inbox_submit_btn, input#inbox_delete_btn{display:inline;width:70px;}
+        </style>
+</head>
+<body>
+            
+
+
+                                <div>
+                                    <button id="opener">add attachments</button>
+                                        <div id="attach_sheet" title="Dialog Title">
+                                            hello world!
+                                        </div>
+                                </div>
+                                
+
+
+
+                       {{ form.media }}
+                        
+                
+            
+                <div>
+                    <form id="taskbox_form" action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="col-md-2">
+                                {{ form.assigned_by|as_crispy_field:"bootstrap" }}
+                                {{ form.assigned_to|as_crispy_field:"bootstrap" }}
+                                {{ form.box|as_crispy_field:"bootstrap" }}   
+                        </div>
+                         <div class="col-md-2">
+                            <div class="well">
+                                {{ form.request|as_crispy_field:"bootstrap" }}
+                                {{ form.job_name|as_crispy_field:"bootstrap" }}
+                                {{ form.priority|as_crispy_field:"bootstrap"  }}
+                            </div>                          
+                        </div>
+                        <div class="col-md-2">
+                            <div class="well">
+                                {{ form.description|as_crispy_field:"bootstrap" }}
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="well">
+                                {{ form.date_due|as_crispy_field:"bootstrap"}}
+
+                                <div>
+                                    <button data-toggle="collapse" data-target="#attachments">add attachments</button>
+                                        <div id="attachments" class="collapse">
+                                            {{ form.attachment|as_crispy_field:"bootstrap" }}
+                                            {{ form.attachment2|as_crispy_field:"bootstrap" }}
+                                            {{ form.attachment3|as_crispy_field:"bootstrap" }}
+                                            {{ form.attachment4|as_crispy_field:"bootstrap" }}
+                                            {{ form.attachment5|as_crispy_field:"bootstrap" }}
+                                        </div>
+                                </div>
+                                
+                                <table id="submit_tb">
+                                    <tr>
+                                        <td align="left" style="padding-left:0;margin-left:0;"><input id="inbox_submit_btn" class="btn btn-primary" onclick="validateForm();" type="submit" value="add" /></td>
+                                        <td><input id="inbox_delete_btn" name="delete" class="btn btn-danger" type="submit" value="delete" /></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="well">
+                                {{ form.accepted_by|as_crispy_field:"bootstrap" }}
+                                {{ form.status|as_crispy_field:"bootstrap" }}
+                                {{ form.completed_on|as_crispy_field:"bootstrap" }}
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="well">
+                                {{ form.reply|as_crispy_field:"bootstrap" }}
+                                 
+                                
+                            </div>
+                               
+                        </div>       
+                    </form>
+                </div>
+            
+      
+                <script type="text/javascript">
+                    $( "#attach_sheet" ).dialog({ autoOpen: false });
+                    $( "#opener" ).click(function() {
+                    $( "#attach_sheet" ).dialog( "open" );
+                    });
+
+                </script>
+                    
+                    
+            </div>  
+                
+ 
+        </div>
+         
+    </div>
+
+</body>
+</html>
+
+
+        
+                    
+       
+       
+        
+       
+
+
+
+      
+        

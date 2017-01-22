@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+     {% block head_content %}
+     <style type="text/css">
+        .clearablefileinput{font-size:.6em;}
+        label{font-size: .8em;}
+        th {font-size: 11px;}
+        .container{width:2000px;}
+        .control-label{display:none;}
+        .form-control{height:22px;padding:4px 6px;font-size:.8em;margin-right:2px;}
+        .td_item{width:130px;}
+        .td_item_ns{width:110px;}
+        .td_desc{width:260px;}
+        .td_date{width:60px;}
+     </style> 
+        {% endblock %}
+        {% block content %} 
+<iframe id="inbox_frame" src="" width="100%" height="100%"></iframe> 
+<div class="container tmarg">
+  {% if messages %}
+        <div class="row">
+            <div class="col-sm-12">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="well">
+
+                <form name="FRForm" action="{% url 'b5:add_first' %}"  method="POST" enctype="multipart/form-data">{% csrf_token %}
+                {{ formset.management_form }}
+                  <table style="margin-bottom:15px;">
+                      <tr>
+                          <th>buyer</th>
+                          <th>dc_received_u</th>
+                          <th>curr_dc_oh_u</th>
+                          <th>dc_curr_oo_u</th>
+                          <th>date_received</th>
+                          <th>item_ns</th>
+                          <th>short_sku</th>
+                          <th>item_no</th>
+                          <th>vendor_style</th>
+                          <th>description</th>
+                          <th>have_image</th>
+                          <th>ad_date</th>
+                          <th>order_date</th>
+                          <th>received_dc</th>
+                          <th>received_137</th>
+                          <th>from_file</th>
+                          <th>photo_dldate</th>
+                          <th>whowhen</th>
+                          <th>studio_out</th>
+                          <th>checked_out</th>
+                          <th>confirmed_placed</th>
+                          <th>studio_in</th>
+                          <th>merch_to_137</th>
+                      </tr>
+                      {% for form in formset %}
+                      <tr>
+                          <td>{{ form.buyer|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.dc_received_u|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.curr_dc_oh_u|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.dc_curr_oo_u|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.date_received|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_item_ns">{{ form.item_ns|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.short_sku|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_item">{{ form.item_no|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.vendor_style|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.description|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.have_image|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_date">
+                            <input type="text" name="{{ form.ad_date.html_name }}" id="{{ form.ad_date.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td class="td_date">
+                            <input type="text" name="{{ form.order_date.html_name }}" id="{{ form.order_date.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td>{{ form.received_dc|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.received_137|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.from_file|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.photo_dldate|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.whowhen|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_date">
+                            <input type="text" name="{{ form.studio_out.html_name }}" id="{{ form.studio_out.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td>{{ form.checked_out|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.confirmed_placed|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_date">
+                            <input type="text" name="{{ form.studio_in.html_name }}" id="{{ form.studio_in.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td>{{ form.merch_to_137|as_crispy_field:"bootstrap" }}</td>
+                      </tr>
+                      {% endfor %}
+                  </table>
+                    
+                    <input type="submit" value="Submit" />
+                </form>
+                <script type="text/javascript">
+                  $("[id$=item_ns]")
+                    .focusout(function() {
+                      var basecode = $(this).parents('tr').children('.td_item_ns').find('input').val();
+                      // var basecode = $(this).val();
+                      console.log(basecode);
+                      var item_num = basecode.slice(0, 4) + " " + basecode.slice(4, 9) + " " + basecode.slice(9, 13) + " " + basecode.slice(13, 16);
+                      // var sku_nospace = basecode.slice(0, 13);
+                      // var sku = basecode.slice(0, 4) + " " + basecode.slice(4, 9) + " " + basecode.slice(9, 13);
+                      // console.log(basecode);
+                      // console.log(item_num);
+                      // console.log($(this).parents('tr').children('.td_item').find('input').val());
+                      // target_1 = $(this).parents('tr').children('.td_item').find('input');
+                      if (basecode != " "){
+                        $(this).parents('tr').children('.td_item').find('input').val(item_num);
+                        // $(this).parents('tr').children('.td_sku').find('input').val(sku);
+                        // $(this).parents('tr').children('.td_sku_ns').find('input').val(sku_nospace);
+                      }
+                    })                  
+                  $('.datepicker').datepicker({ dateFormat: 'mm/dd/yy' }).val();
+                  $('.ad_datepicker').datepicker({ dateFormat: 'yymmdd' }).val();
+               </script>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
+        {% endblock %}
+

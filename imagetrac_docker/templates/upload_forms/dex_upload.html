@@ -1,0 +1,44 @@
+{% extends "base_nonav.html" %}
+
+{% load staticfiles %}
+
+{% csrf_token %}
+
+{% block head_content %}
+        
+        <style>
+        
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+    <div class="row">
+        
+        <div class="col-md-12">
+            <div class="well imagewell">
+                {% if form.errors %}
+                <p style="color: red;">
+                    Please correct the error{{ form.errors|pluralize }} below.
+                </p>
+                {% endif %}
+
+                <form action="" enctype="multipart/form-data"  method="post">
+                    <table>
+                        {{ form.as_table }}
+                    </table>
+                    {% csrf_token %}
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>        
+
+{% endblock %}

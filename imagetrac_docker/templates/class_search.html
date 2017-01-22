@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        .well{background-color: #b1a8a0}
+        .not_received{background-color:#990000;color:#eee;border-radius: 4px;}
+        .received{background-color:#006600;color:#eee;border-radius: 4px;}
+        .buyer_sample{background-color:#FF9900;color:#eee;border-radius: 4px;}
+        .dimmed{background-color:#bbb;color:#eee;border-radius: 4px;}
+        .status{text-align: center;font-weight:bold;}
+        .stat_in{position: relative;display: inline-block;width:15px;height:10px;moz-box-radius webkit-box-radius, box-radius :4px;background-color: #006600;}
+        .stat_out{position: relative;display: inline-block;width:15px;height:10px;moz-box-radius webkit-box-radius, box-radius :4px;background-color: #990000;}
+        h6{margin: 15px 0 0 0;}
+        #image_tb tbody{padding-bottom: 5px;}
+        #watch_tb {font-size:1em;}
+        
+        .fixed-table-container {
+            border: 0 solid #dddddd;
+            font-size: .9em;
+        }
+        .fixed-table-container tbody td {
+            border: 0 solid #dddddd;
+        }
+
+        #page_table{font-size: .9em;border: 0 solid #dddddd;}
+        .bootstrap-table .table, .bootstrap-table .table > tbody > tr > th, .bootstrap-table .table > tfoot > tr > th, .bootstrap-table .table > thead > tr > td, .bootstrap-table .table > tbody > tr > td, .bootstrap-table .table > tfoot > tr > td {
+            padding: 0px 2px !important; border: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th .th-inner {
+            line-height: 1;
+        }
+        .fixed-table-container thead th {
+            border-left: 0 solid #dddddd;
+        }
+        .fixed-table-container thead th {
+            border-left: 0px solid #dddddd;
+        }
+        .bootstrap-table .table > thead > tr > th {
+            border-bottom: 0px solid #ddd;
+        }
+        #list_controls.container.stage{width:1600px; font-size: .9em; line-height: 1.2;}
+        
+            
+        /*summary::-webkit-details-marker {
+            color:blue;
+        }
+
+        details[open] summary::-webkit-details-markeblue#0000FF;
+        }*/
+        /*table.striped > tbody > tr:nth-of-type(2n+1) {
+            background-color: rgb(249, 249, 249);
+        }*/
+        .disabled{background-color:#cc00ff;color:#eee;webkit-border-radius, -moz-border-radius: 4px;}
+        .awaiting{background-color:#006600;color:#eee;webkit-border-radius, -moz-border-radius: 4px;}
+        .to_studio{background-color:#66CC66;opacity: 0.7;color:#eee;webkit-border-radius, -moz-border-radius: 4px;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="container stage">
+        <div class="row searchform">
+            <div class="col-md-12">
+                <div class="well">
+                    
+                    <form class="" role="form">
+                    
+                        <div class="form-group">
+                            <input id="product_id" type="text" placeholder="enter searchstring" class="form-control">
+                        </div>
+                        <button type="submit" id="product_button" href="{{ base_url }}/productsearch/" class="btn btn-success" name="productsearch" onclick="processProductNumber();return(false);">file search
+                        </button> 
+
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}

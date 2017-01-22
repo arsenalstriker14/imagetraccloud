@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>b5 | Login</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
+    <script src="/static/js/vendor/jquery-1.11.3.js">
+    </script>
+    <script src="/static/js/vendor/bootstrap.min.js">
+    </script> 
+    <style type="text/css">
+        .login_form{
+            margin: 20px;
+        }
+        .container{
+            background-color: #ddd;
+        }
+        .tmarg{
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container tmarg">
+        <div class="row">
+            <div class="col-md-4">
+                
+            </div>
+            <div class="col-md-4">
+                <div class="login_form">
+            <form name="LoginForm" action="/main/" method="post">
+            {% csrf_token %}
+            {% if next %}
+                <!-- <input type="hidden" name="next" value="postsearch/" /> -->
+                <input type="hidden" name="next" value="{{ next }}" />
+            {% endif %}
+                <div class="form-group">
+                    <label for="inputUser">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <!-- <div class="checkbox">
+                    <label><input type="checkbox"> Remember me</label>
+                </div> -->
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+            </div>
+            <div class="col-md-4">
+                
+            </div>
+            
+        </div>
+    </div>
+
+        
+</body>
+</html>  

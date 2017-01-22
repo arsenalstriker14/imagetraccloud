@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load b5_extras %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        h6{margin: 15px 0 0 0;}
+        .fixed-table-container { font-size: .9em; }
+        div.row{width:2000px;}
+        div.col-md-12{width:2000px;}
+        .stage{margin:0 auto;max-width: 2000px;}
+        * {
+          box-sizing: border-box;
+        }
+        .description_td {
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 300px;
+        }
+        .note{padding-left:20px;}
+        .margintop{margin-top:25px;}
+        .buyer_tb{font-size:1.4em;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="stage">
+        <div class="row">
+            <div class="col-md-12 margintop">
+            <h3>Buyers and related classes</h3>
+                <table  
+                    data-toggle="table"  
+                    data-query-params="queryParams"
+                    data-pagination="true"
+                    data-striped = "false"
+                    data-page-size = 50
+                    data-show-refresh = 'true'
+                    data-show-toggle = 'true'
+                    data-search="true"
+                    class="striped buyer_tb">
+                    <thead>
+                        <tr>
+                            <th data-field="class"  data-sortable="true">class</th>
+                            <th data-field="description"  data-sortable="false">description</th>
+                            <th data-field="buyer"  data-sortable="true">buyer</th>
+<!--                             <th data-field="records"data-sortable="true" >records</th>
+ -->                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}                            
+                        <tr>
+                            <td>{{ record.product_class }}</td>
+                            <td>{{ record.description }}</td>
+                            <td>{{ record.buyer }}</td>
+<!--                             <td>{{ record.num_products }}</td>
+ -->                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <script>
+        var $table = $('#table');
+
+        $(function () {
+        });
+        function queryParams() {
+            return {
+                type: 'owner',
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 50,
+                page: 1
+            };
+        }
+        </script>
+    </div>
+{% endblock %}

@@ -1,0 +1,140 @@
+{% extends "base_nonav.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="container stage">
+        <div class="row">
+                {% if records or threcords or rgrecords or lgrecords %}
+            
+            <div class="col-md-12">
+                <div class="well imagewell">
+                  <a href="{{request.META.HTTP_REFERER}}">Go back</a>
+                  <h4>images</h4> 
+                    <table id="cntmp_image_tb" 
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-search="false">
+                        <thead style="max-width:1098px;">
+                            <tr>
+                                <!-- <th data-field="thumbnail"  data-sortable="false">thumbnail</th>
+                                <th data-field="filename"  data-sortable="true">filename</th> -->
+                            </tr>
+                        </thead>
+                        <tbody style="max-width:1098px;">
+                            <tr>
+                                {% for lgrecord in lgrecords %}
+                                <td>{{ lgrecord.mod_date }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr> 
+                                {% for threcord in threcords %}
+                                <td><img class="thumb_img" src="{{MEDIA_URL}}thumb/{{ threcord.filename }}" /></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for threcord in threcords %}
+                                <td><a href='{{MEDIA_URL}}thumb/{{ threcord.filename }}' class="cntmp_image_tb_link">{{ threcord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for rgrecord in rgrecords %}
+                                <td><a href='{{MEDIA_URL}}regular/{{ rgrecord.filename }}' class="cntmp_image_tb_link">{{ rgrecord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for lgrecord in lgrecords %}
+                                <td><a href='{{MEDIA_URL}}large/{{ lgrecord.filename }}' class="cntmp_image_tb_link">{{ lgrecord.filename }}</a></td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="well imagewell">
+                  <h4>print files associated with cvs: <span style="color:maroon;">{% for record in records %}{{ record.sku }}{% endfor %}</span> </h4> 
+                    <table id="cntmp_printfile_tb" 
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-search="true">
+                        <thead>
+                            <tr>
+                                <th data-field="filename"  data-sortable="false">filename</th>
+                                <th data-field="mod_date"  data-sortable="false">modification date</th>
+                                <th data-field="path"  data-sortable="false">one image path</th>
+                            </tr>
+                        </thead>
+                        <tbody class="fixed-table-container">
+                            {% for printrecord in printrecords %}
+                            <tr>
+                                <td><a href='{{PRINTMEDIA_ROOT}}/printmedia/{{ printrecord.path }}{{ printrecord.filename }}' class="cntmp_image_tb_link">{{ printrecord.filename }}</a></td>
+                                <td>{{ printrecord.mod_date }}</td>
+                                <td>{{ printrecord.path }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            </div>
+                
+                {% else %}
+                {% endif %}
+
+
+                    
+
+                    <script>
+                    var $table = $('#table');
+
+                    $(function () {
+                    });
+                    function queryParams() {
+                        return {
+                            type: 'owner',
+                            sort: 'updated',
+                            direction: 'desc',
+                            per_page: 100,
+                            page: 1
+                        };
+                    }
+                    </script>
+                        
+
+                </div>
+            </div>
+        
+            
+        </div>  
+              
+    </div>
+{% endblock %}

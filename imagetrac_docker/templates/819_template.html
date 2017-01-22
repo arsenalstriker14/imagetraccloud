@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load b5_extras %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        h6{margin: 15px 0 0 0;}
+        .fixed-table-container { font-size: .9em; }
+        div.row{width:2000px;}
+        div.col-md-12{width:2000px;}
+        .stage{margin:0 auto;max-width: 2000px;}
+        * {
+          box-sizing: border-box;
+        }
+        .description_td {
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 300px;
+        }
+        .note{padding-left:20px;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="stage">
+        {% if messages %}
+        <div class="row">
+            <div class="col-sm-12">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="row searchform">
+            
+            <div class="col-md-8">
+                <div class="well">
+                    
+                    {% crispy form %}
+                   <details>
+                        <summary>search hints</summary>
+                        <br />
+                        <p>the imagetrac smartsearch recognizes a number of query types: 
+                       <table class="details_tb">
+                            <tr><th>query:</th><th>returns:</th></tr>
+                            <tr><td class="detail_tb_bold">“Transfer060216 Final.xlsx”</td><td>inventory xlsx filename returns all data on that sheet</td></tr>
+                            <tr><td class="detail_tb_bold">“5130 12370 2809”</td><td>cvs returns data from all sheets</td></tr>
+                            <tr><td class="detail_tb_bold">“5130123”</td><td>7 digit vendor sku returns data from all sheets</td></tr>
+                        </table>
+                    </details>
+                    <br>
+                    <p>the most recent worksheets are listed below:</p>
+                        <table>
+                            {% if worksheetrecords %}
+                            {% for worksheetrecord in worksheetrecords  %}
+                            <tr><td><a class="as_menu_link" href="{{ base_url }}/819/?query={{ worksheetrecord.source }}&submit=Submit">{{ worksheetrecord.source }}</a></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            {% endif %}
+                        </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+                {% if records %}
+            <div class="col-md-12">
+                <div class="well">
+                  <h4>819 to 137</h4> 
+                    <table class="color_grid">
+                            {% for cgrecord in cgrecords  %}
+                        <tr>
+                            <td><div class="cgbox" style="background-color:#{{ cgrecord.hexcode }};"></div></td><td class="cg_desc">{{ cgrecord.description }}</td>
+                        </tr>
+                            {% endfor %}
+                    </table>
+                    <table  
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-striped = "false"
+                            data-page-size = 100
+                            data-show-refresh = 'true'
+                            data-show-toggle = 'true'
+                            data-search="true"
+                            class="striped">
+                        <thead>
+                            <tr>
+                                <th data-field="vendor"  data-sortable="true">vendor</th>
+                                <th data-field="item"  data-sortable="true">item</th>
+                                <th data-field="description"  data-sortable="true">description</th>
+                                <th data-field="in_store" data-sortable="true">quantity</th>
+                                <th data-field="on_order" data-sortable="true">source</th>
+<!--                                 <th data-field="buyer" class="">buyer</th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            {% for record in records %}                            
+
+                            <tr>
+                                <td>{{ record.sku }}</td>
+                                <td class="item"><a href='/product/{{ record.sku }}/{{ record.item_no }}' onclick="showConsole('/product/{{ record.sku }}/{{ record.item_no }}');return(false);">{{ record.item_no }}</a></td>
+                                <td>{{ record.desc }}</td>
+                                <td>{{ record.quantity}}</td>
+                                <td>{{ record.source }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            {% else %}
+            {% endif %}
+            
+                
+                  
+
+                </div>
+            </div>
+        
+            
+        </div>  
+
+        <script>
+        var $table = $('#table');
+
+        $(function () {
+        });
+        function queryParams() {
+            return {
+                type: 'owner',
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 100,
+                page: 1
+            };
+        }
+        function highlightRow(){
+            var studios = document.querySelectorAll('.studio');
+            var targets = document.querySelectorAll('.availability');
+            var buyers = document.querySelectorAll('.buyer');
+            var confirmeds = document.querySelectorAll('.processed');
+            var items = document.querySelectorAll('.item');
+            for (var i=0; i<confirmeds.length; i++){
+                
+                if ((confirmeds[i].innerHTML == 'None') || (confirmeds[i].childNodes.length === 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                    confirmeds[i].parentElement.className = ('awaiting');
+                }
+                if (studios[i].innerHTML != 'None'){
+                    studios[i].parentElement.className = (' ');
+                    studios[i].parentElement.className = ('to_studio');
+                }
+                if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].childNodes.length > 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<targets.length; i++){
+                if (targets[i].innerHTML)
+                if (targets[i].innerHTML == 't'){
+                    targets[i].parentElement.className = ('disabled');
+                }
+                
+            }
+            for (var i=0; i<buyers.length; i++){
+                if (buyers[i].innerHTML)
+                if ((buyers[i].innerHTML == 'X') || (buyers[i].innerHTML == 'x')){
+                    buyers[i].parentElement.className = ('buyer_sample');
+                }
+                
+            }
+            for (var i=0; i<confirmeds.length; i++){
+                if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].innerHTML != '')){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<items.length; i++){
+                if (items[i].firstChild.innerHTML.length < 19){
+                    items[i].parentElement.className = (' ');
+                    items[i].parentElement.className = ('dimmed');
+                }
+                
+            }
+        }
+        function monthSorter(a, b) {
+            if (a.month < b.month) return -1;
+            if (a.month > b.month) return 1;
+            return 0;
+        }
+        highlightRow();
+        </script>
+    </div>
+{% endblock %}

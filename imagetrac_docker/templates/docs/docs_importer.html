@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+{% block head_content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+    $( "#accordion" ).accordion({
+      heightStyle: "content"
+    });
+  });
+</script>
+<style type="text/css">
+	#accordion{margin-top:15px;}
+	td{padding:10px;}
+	.sub{line-height: 1.5;}
+	.ui-widget-content{color:#555;}
+	.ui-widget{font-family:Helvetica, Arial, sans-serif;}
+	.ui-helper-reset{font-size:1em;}
+	.half_copy_box{position: relative;display: block;max-width:1000px;margin-bottom:10px;}
+	.extra_clearance{padding-bottom:35px;}
+	.clear_both{margin:15px 0 0 0;}
+	.super_s{font-size: .8em;line-height: 2;}
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div id="list_controls" class="container stage">
+	<div class="row">
+		<h2>Creating a Navicat Import Task</h2>
+		<p>These are the instructions for creating/modifying a navicat importer. An importer is a task that maps spreadsheet data to a database table. </p>
+		<p class="bold sub">The basic steps are as follows:</p>
+		<ul>
+			<li>convert the .xlsx file to csv</li>
+			<li>add utf-8 encoding to the csv file</li>
+			<li>create the navicat task</li>
+			<li>configure the navicat task</li>
+	</div>
+    <div class="row">
+        <div class="col-sm-12">
+        	<div id="accordion">
+				<h3>convert the file</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>Open your target spreadsheet in Excel. Save the file in the <span class="bold">windows comma seperated values (csv) </span>format, to a temporary holding directory (e.g. ADVERTISING/Inserts/MAGETRAC/csv/ or, if on the server workstation - /Users/imagetracdb/b5crontab/temp/).</td>
+							<td><img src="{% static 'img/docs/inventory/windowscsv.png' %}" /></td>
+						</tr>
+					</table>
+				</div>
+				<h3>add utf-8 encoding</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>open the newly created csv file in Sublime Text. Simply resave the file with UTF-8 encoding: </td><td></td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/docs/inventory/utf8.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>create the importer</h3>
+				<div>
+					<table class="accordion_tb">
+						<tr>
+							<td>from the tables screen in navicat, click "Import" on the footer.&nbsp;&nbsp;<img src="{% static 'img/docs/importers/import_btn.png' %}" /></td><td></td>
+						</tr>
+					</table>
+				</div>
+				<h3>configure the importer</h3>
+				<div>
+				<tr>
+					<td>
+
+
+						<table>
+							<tr>
+								<td>though you have a choice of file formats, normally you will want to use csv</td>
+								<td>click "Add File" and navigate to your csv</td>
+								<td>click "continue"</td>
+								<td>uncheck 4 digit years</td>
+								<td>choose the database table to which you'll be adding data</td>
+								<td>for each table field, indicate the corresponding csv data column</td>
+								<td>choose your preferred import behavior</td>
+								<td>choose "Save as" to name yout task; "Save" to simply save a modification; or "Start" to run your task.</td>
+							</tr>
+								<td><img src="{% static 'img/docs/importers/format.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/addfile.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/skipthis.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/4moreyears.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/choosetable.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/addcols.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/importchoice.png' %}" /></td>
+								<td><img src="{% static 'img/docs/importers/import.png' %}" /></td>
+						</table>
+
+
+					</td><td></td>
+				</tr>
+				
+				</div>
+				
+			</div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

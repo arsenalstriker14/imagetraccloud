@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load b5_extras %}
+{% crispy postsearch_form postsearch_form.helper %}
+
+{% csrf_token %}
+
+
+
+
+        {% block head_content %}
+        <script src="{% static 'js/bootstrap-table.js' %}"></script>
+        <script>
+        function dateSorter(a, b) {
+            a = Date.parse(a).getTime()/1000;
+            b= Date.parse(b).getTime()/1000;
+            return (a-b);
+        }
+        </script>
+        <style>
+        h6{margin: 15px 0 0 0;}
+        .fixed-table-container { font-size: 11px; }
+        div.row{width:2000px;}
+        div.col-md-12{width:2000px;}
+        .stage{margin:0 auto;max-width: 2000px;}
+        * {
+          box-sizing: border-box;
+        }
+        .description_td {
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 300px;
+        }
+        .note{padding-left:20px;}
+        .as_menu_link{color:blue;}
+        </style>
+        <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20140204/json2.min.js"></script>
+    <![endif]-->
+        {% endblock %}
+
+
+{% block content %}
+    <iframe id="inbox_frame" src="" width="100%" height="100%"></iframe>
+    <div id="list_controls" class="stage">
+        {% if messages %}
+        <div class="row">
+            <div class="col-sm-12">
+                    {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        <div class="row searchform">
+            <div class="col-md-8">
+                <div class="well">
+                    <div class="well">
+                        {% if request.user|has_group:"production" %}
+                        {% if user.is_staff %}
+                        <h6>watched files</h6>
+                        <table id="watch_tb" 
+                                data-toggle="table"  
+                                data-pagination="true"
+                                data-striped = "false"
+                                data-page-size = 5
+                                data-show-refresh = 'true'
+                                data-show-toggle = 'true'
+                                data-search="true"
+                                class="striped">
+                            <thead>
+                                <tr>
+                                    <th data-field="watcher" data-sortable="true">watcher</th>
+                                    <th data-field="item_no" data-sortable="true">item no</th>
+                                    <th>description</th>
+                                    <th data-field="status" data-sortable="true">status</th>
+                                    <th>date placed</th>
+                                    <th>comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    
+                                    {% if allwatchrecords %}
+                                    {% for allwatchrecord in allwatchrecords %}
+                                <tr>
+                                    <td>{{ allwatchrecord.watched_by }}</a></td>
+                                    <td><a href='' onclick='get_sku();return(false);'>{{ allwatchrecord.item_no }}</a></td>
+                                    <td>{{ allwatchrecord.desc }}</td>
+                                    <td class="status"></td>
+                                    <td class="marker">{{ allwatchrecord.confirmed_placed }}</td> 
+                                    <td>{{ allwatchrecord.comments }}</td>                               
+                                </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                            </tbody>
+                        </table>
+                        
+                        {% else %}
+                        
+                        <h6>watched files</h6>
+                        <table id="watch_tb" 
+                                data-toggle="table"  
+                                data-pagination="false"
+                                data-search="false">
+                            <thead>
+                                <tr>
+                                    <th>watcher</th>
+                                    <th>item no</th>
+                                    <th>description</th>
+                                    <th>status</th>
+                                    <th>date placed</th>
+                                    <th>comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                        {% for watchrecord in watchrecords %}
+                                <tr>
+                                    <td>{{ watchrecord.watched_by }}</a></td>
+                                    <td><a href='' onclick='get_sku();return(false);'>{{ watchrecord.item_no }}</a></td>
+                                    <td>{{ watchrecord.desc }}</td>
+                                    <td class="status"></td>
+                                    <td class="marker">{{ watchrecord.confirmed_placed }}</td> 
+                                    <td>{{ watchrecord.comments }}</td>                               
+                                </tr>
+                                    {% endfor %}
+                                
+                            </tbody>
+                        </table> 
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="well"> 
+                        <h6>taskmanager inboxes</h6>
+                        {% include "b5/list_template_tm.html" %}
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-md-4">
+                <div class="well">
+                    
+                    {% crispy form %}
+                   <details>
+                        <summary>search hints</summary>
+                        <br />
+                        <p>the imagetrac smartsearch recognizes a number of query types: 
+                       <table class="details_tb">
+                            <tr><th>query:</th><th>returns:</th></tr>
+                            <tr><td class="detail_tb_bold">“030616”</td><td>6 digit date format returns all items for the ad date matching the input</td></tr>
+                            <tr><td class="detail_tb_bold">“5130 12370 2809 933”</td><td>item number returns each ad instance for that item</td></tr>
+                            <tr><td class="detail_tb_bold">“5130123702809933”</td><td>item number without spaces returns each ad instance for that item</td></tr>
+                            <tr><td class="detail_tb_bold">“5130 12370 2809”</td><td>cvs number returns each ad instance for that item for all items with that cvs</td></tr>
+                            <tr><td class="detail_tb_bold">“5130123702809”</td><td>cvs number without spaces returns each ad instance for that item for all items with that cvs</td></tr>
+                        </table>
+                    </details>
+                    <br />
+                     <p>the most recent adds are listed below:</p>
+                        <table>
+                            {% if adrecords %}
+                            {% for adrecord in adrecords  %}
+                            <tr><td><a class="as_menu_link" href="{{ base_url }}/adscreen/?query={{ adrecord.ad_date }}&submit=Submit">{{ adrecord.ad_date }}</a>&nbsp;&mdash;&nbsp;{{ adrecord.version }}</td>
+                                <td>&nbsp;&nbsp;||&nbsp;&nbsp;</td><td><a class="as_menu_link" href="{{ base_url }}/adscreen/?query={{ adrecord.ad_date }}+-t&submit=Submit">Hide Processed</a></td>
+                                <td>&nbsp;&nbsp;||&nbsp;&nbsp;</td><td><a class="as_menu_link" href="{{ base_url }}/adscreen/?query={{ adrecord.ad_date }}+-a&submit=Submit">Available</a></td>
+                                <td>&nbsp;&nbsp;||&nbsp;&nbsp;</td><td><a class="as_menu_link" href="{{ base_url }}/adscreen/?query={{ adrecord.ad_date }}+-u&submit=Submit">Unavailable</a></td>
+                                <td>&nbsp;&nbsp;||&nbsp;&nbsp;</td><td><a class="as_menu_link" href="{{ base_url }}/adscreen/?query={{ adrecord.ad_date }}+-o&submit=Submit">On Order</a></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            {% endif %}
+                        </table>
+                    
+                </div>
+            </div> -->
+        </div>
+
+        <div class="row">
+                {% if records %}
+            <div class="col-md-12">
+                <div class="well">
+                  <h4>studio check</h4> 
+                  <div><a href="{{ base_url }}/export-studiocheck/"><input type="button"  class="btn btn-success" value="export" /></a>
+                    </div>
+                    <table class="color_grid">
+                            {% for cgrecord in cgrecords  %}
+                        <tr>
+                            <td><div class="cgbox" style="background-color:#{{ cgrecord.hexcode }};"></div></td><td class="cg_desc">{{ cgrecord.description }}</td>
+                        </tr>
+                            {% endfor %}
+                    </table>
+                    <table  
+                            data-toggle="table"  
+                            data-query-params="queryParams"
+                            data-pagination="true"
+                            data-striped = "false"
+                            data-page-size = 100
+                            data-show-refresh = 'true'
+                            data-show-toggle = 'true'
+                            data-search="true"
+                            class="striped">
+                        <thead>
+                            <tr>
+                                <th data-field="ad date"  data-sortable="true">ad date</th>
+                                <th data-field="vendor"  data-sortable="true">vendor</th>
+                                <th data-field="size_type"  data-sortable="true">size type</th>
+                                <th data-field="item"  data-sortable="true">item</th>
+                                <th data-field="item_ns"  data-sortable="true">item ns</th>
+                                <th data-field="manufacture"  data-sortable="true">mfg</th>
+                                <th data-field="desc"  data-sortable="true">description</th>
+                                <th data-field="notes"  data-sortable="true">notes</th>
+                                <th data-field="order_date" data-sortable="true" sorter="monthSorter">dc ordered</th>
+                                <th data-field="received_studio" data-sortable="true" sorter="monthSorter">dc received</th>
+                                <th data-field="received_buyer" data-sortable="true">buyer sample</th>
+                                <th data-field="studio_out" data-sortable="true" sorter="monthSorter">to studio</th>
+                                <th data-field="confirmed_placed" data-sortable="true" sorter="monthSorter">processed</th>
+                                <th data-field="availability" class="hidden">file na</th>
+                                <th data-field="availability" class="">rec other</th>
+                                <th data-field="dc_on_hand" data-sortable="true">dc on hand</th>
+                                <th data-field="137" data-sortable="true">next door</th>
+                                <th data-field="dc_on_order" data-sortable="true">dc on order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- {% for hotlink in hotlinks %}                            
+                            <tr>
+                                <td>{{ hotlink.first_date }}</td>
+                                <td>{{ hotlink.ad_date }}</td>
+                                <td class="item"><a href='/product/{{ hotlink.sku }}/{{ hotlink.item_no }}' onclick="showConsole('/product/{{ hotlink.sku }}/{{ hotlink.item_no }}');return(false);">{{ hotlink.item_no }}</a></td>
+                                <td>{{ hotlink.mfg }}</td>
+                                <td>{{ hotlink.desc }}</td>
+                                <td>{{ hotlink.order_date }}</td>
+                                <td>{{ hotlink.received_dc }}</td>
+                                <td class ="buyer">{{ hotlink.received_buyer }}</td>
+                                <td class="studio">{{ hotlink.studio_out }}</td>
+                                <td class="processed">{{ hotlink.confirmed_placed }}</td>
+                                <td class="availability hidden">{{ hotlink.na }}</td>
+                                <td class="">{{ hotlink.received_other }}</td>
+                            </tr>
+                            {% endfor %} -->
+                            {% for record in records %}                            
+
+                            <tr>
+                                <td>{{ record.ad_date }}</td>
+                                <td>{{ record.vendor_number }}</td>
+                                <td>{{ record.size_type }}</td>
+                                <td class="item"><a href='/product/{{ record.sku }}/{{ record.item_no }}' onclick="showConsole('/product/{{ record.sku }}/{{ record.item_no }}');return(false);">{{ record.item_no }}</a></td>
+                                <td>{{ record.item_ns }}</td>
+                                <td>{{ record.mfg }}</td>
+                                <td class="description_td">{{ record.desc }}</td>
+                                <td class="note">{{ record.notes }}</td>
+                                <td>{{ record.order_date }}</td>
+                                <td>{{ record.received_dc }}</td>
+                                <td class ="buyer">{{ record.received_buyer }}</td>
+                                <td class="studio">{{ record.studio_out }}</td>
+                                <td class="processed">{{ record.confirmed_placed }}</td>
+                                <td class="availability hidden">{{ record.na }}</td>
+                                <td class="">{{ record.received_other }}</td>
+                                <td class="">{{ record.curr_dc_oh_u  }}</td>
+                                <td class="">{{ record.merch_to_137  }}</td>
+                                <td class="">{{ record.dc_curr_oo_u }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>  
+                </div>
+            {% else %}
+            {% endif %}
+                  
+
+                </div>
+            </div>
+        
+            
+        </div>  
+
+        <script>
+        var $table = $('#table');
+
+        $(function () {
+        });
+        function queryParams() {
+            return {
+                type: 'owner',
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 100,
+                page: 1
+            };
+        }
+        function highlightRow(){
+            var studios = document.querySelectorAll('.studio');
+            var targets = document.querySelectorAll('.availability');
+            var buyers = document.querySelectorAll('.buyer');
+            var confirmeds = document.querySelectorAll('.processed');
+            var notes = document.querySelectorAll('.note');
+            var items = document.querySelectorAll('.item');
+            for (var i=0; i<confirmeds.length; i++){
+                
+                if ((confirmeds[i].innerHTML == 'None') || (confirmeds[i].childNodes.length === 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                    confirmeds[i].parentElement.className = ('awaiting');
+                }
+                if (studios[i].innerHTML != 'None'){
+                    studios[i].parentElement.className = (' ');
+                    studios[i].parentElement.className = ('to_studio');
+                }
+                if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].childNodes.length > 0)){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<targets.length; i++){
+                if (targets[i].innerHTML)
+                if (targets[i].innerHTML == 't'){
+                    targets[i].parentElement.className = ('disabled');
+                }
+                
+            }
+            for (var i=0; i<buyers.length; i++){
+                if (buyers[i].innerHTML)
+                if ((buyers[i].innerHTML == 'X') || (buyers[i].innerHTML == 'x')){
+                    buyers[i].parentElement.className = ('buyer_sample');
+                }
+                
+            }
+            for (var i=0; i<notes.length; i++){
+                if (notes[i].innerHTML)
+                if (notes[i].innerHTML.indexOf('DNS')>-1){
+                    notes[i].parentElement.className = ('dnsd');
+                }
+                
+            }
+            for (var i=0; i<confirmeds.length; i++){
+                if ((confirmeds[i].innerHTML != 'None') && (confirmeds[i].innerHTML != '')){
+                    confirmeds[i].parentElement.className = (' ');
+                }
+                
+            }
+            for (var i=0; i<items.length; i++){
+                if (items[i].firstChild.innerHTML.length < 19){
+                    items[i].parentElement.className = (' ');
+                    items[i].parentElement.className = ('dimmed');
+                }
+                
+            }
+        }
+        function monthSorter(a, b) {
+            if (a.month < b.month) return -1;
+            if (a.month > b.month) return 1;
+            return 0;
+        }
+        highlightRow();
+        </script>
+    </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+<tr>
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.ad_date.html_name }}" id="{{ form.ad_date.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td class="td_item"> {{ form.item_no|as_crispy_field:"bootstrap" }}</td>
+                          <td> {{ form.mfg|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_desc">{{ form.desc|as_crispy_field:"bootstrap" }}</td>
+                          <td> {{ form.vendor_number|as_crispy_field:"bootstrap" }}</td>
+
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.order_date.html_name }}" id="{{ form.order_date.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          
+
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.received_dc.html_name }}" id="{{ form.received_dc.id_for_label }}" class="form-control datepicker">
+                          </td>
+
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.received_buyer.html_name }}" id="{{ form.received_buyer.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          
+
+                          <td> {{ form.received_other|as_crispy_field:"bootstrap" }}</td>
+
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.studio_out.html_name }}" id="{{ form.studio_out.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.confirmed_placed.html_name }}" id="{{ form.confirmed_placed.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          
+
+                          <td>{{ form.notes|as_crispy_field:"bootstrap" }}</td>
+                          <td class="td_item_ns"> {{ form.item_ns|as_crispy_field:"bootstrap" }}</td>
+                          <td> {{ form.sku|as_crispy_field:"bootstrap" }}</td>
+                          <td> {{ form.sku_ns|as_crispy_field:"bootstrap" }}</td>
+                          <td>{{ form.first|as_crispy_field:"bootstrap" }}</td>
+
+                          <td class="td_date"> 
+                            <input type="text" name="{{ form.first_date.html_name }}" id="{{ form.first_date.id_for_label }}" class="form-control datepicker">
+                          </td>
+                          <td> {{ form.buyer|as_crispy_field:"bootstrap" }}</td>
+                          <td> {{ form.na|as_crispy_field:"bootstrap" }}</td>
+                      </tr>
