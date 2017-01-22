@@ -42,7 +42,7 @@ THIRD_PARTY_APPS = (
     'allauth.socialaccount',  # registration
     'suit', # admin skin
     'django_filters',
-    'bootstrap3_datetime',
+    # 'bootstrap3_datetime',
     'rest_framework', # 'rest_framework.authtoken',
     'anymail',
 )

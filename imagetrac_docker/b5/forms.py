@@ -2,7 +2,6 @@ from django import forms
 from multiupload.fields import MultiFileField
 from django.forms import ModelForm, DateInput
 from .models import *
-from bootstrap3_datetime.widgets import DateTimePicker
 import re
 from django.forms.widgets import Widget, Select, MultiWidget
 from django.forms.extras.widgets import SelectDateWidget

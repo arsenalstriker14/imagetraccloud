@@ -1486,7 +1486,8 @@ def quicksearch(request, searchstring):
 	threcords = ThumbWebfiles.objects.filter(sku__iexact=sku)
 	   
 	tpl = 'console_template.html'
-	return render_to_response(tpl, {'user': user, 'lgrecords': lgrecords, 'rgrecords': rgrecords, 'msrecords': msrecords, 'threcords': threcords, 'printrecords': printrecords}, context_instance=RequestContext(request))
+	dict_ = {'user': user, 'lgrecords': lgrecords, 'rgrecords': rgrecords, 'msrecords': msrecords, 'threcords': threcords, 'printrecords': printrecords}
+	return render(request, tpl, dict_)
 
 def watch_list(request):
 	user = request.user
@@ -1595,7 +1596,7 @@ def delete_adminwatchlist_item(request, id, userid):
 			user_id = request.user.id
 			records = HotItem.objects.all()
 			returndict = {'form': form, 'records': records, 'user': user}
-			return render_to_response('adminwatched.html', returndict, context_instance=RequestContext(request))
+			return render(request, 'adminwatched.html', returndict)
 		if form.is_valid():
 			form.save()
 			return HttpResponseRedirect('/adminwatched/'+ id +'/')
@@ -1719,16 +1720,15 @@ def check_sequence(request):
 
 			records = sequence
 			default_dict = {'user': user, 'records': records, 'form': form}
-			return render_to_response('sequence_result.html', default_dict, context_instance=RequestContext(request))
+			return render(request, 'sequence_result.html', default_dict)
 
 	else:               
 			tpl = "sequence_result.html"
-			variables = RequestContext(request, {'user': user, 'form': form,
-			'show_results': show_results}) 
-			return render_to_response(tpl, variables)
+			variables =  {'user': user, 'form': form, 'show_results': show_results}
+			return render(request, tpl, variables)
 
 def buyer_class(request):
 	records = Buyers.objects.annotate(num_products=Count('product')) 
 	tmp = 'buyerclass.html'
-	variables = RequestContext(request, {'records': records })
-	return render_to_response(tmp, variables)
+	variables = {'records': records }
+	return render(request, tmp, variables)
