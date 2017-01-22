@@ -93,7 +93,7 @@ FIXTURE_DIRS = (
 # ------------------------------------------------------------------------------
 # EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='anymail.backends.mailgun.MailgunBackend')  # or sendgrid.SendGridBackend, or...
-MAILGUN_API_KEY = env('DJANGO_MAILGUN_API_KEY',)
+MAILGUN_API_KEY = env('DJANGO_MAILGUN_API_KEY', default='key-02740e6bccb4d7fe2a8d624f1fa25cbd')
 DEFAULT_FROM_EMAIL = 'postmaster@sandboxa3f104b2486549f39b93a011dbe86f3b.mailgun.org'
 
 # MANAGER CONFIGURATION
