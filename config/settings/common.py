@@ -218,7 +218,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(ROOT_DIR('staticfiles'))
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
+
 PRINTMEDIA_ROOT = str(ROOT_DIR('printmedia'))
 PRINTMEDIA_URL = '/printmedia/'
 UPLOAD_ROOT = str(ROOT_DIR('uploads'))
