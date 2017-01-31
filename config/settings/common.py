@@ -15,6 +15,7 @@ import os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (imagetrac_docker/config/settings/common.py - 3 = imagetrac_docker/)
 APPS_DIR = ROOT_DIR.path('imagetrac_docker')
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 env = environ.Env()
 env.read_env()
