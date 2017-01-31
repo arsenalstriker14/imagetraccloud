@@ -56,7 +56,7 @@ node_modules/
 .sass-cache
 
 # virtual environments
-.env
+# .env
 
 # User-uploaded media
 imagetrac_docker/media/
@@ -64,3 +64,8 @@ imagetrac_docker/media/
 
 
 staticfiles/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

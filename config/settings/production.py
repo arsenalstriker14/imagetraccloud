@@ -65,7 +65,8 @@ X_FRAME_OPTIONS = 'DENY'
 # ------------------------------------------------------------------------------
 # Hosts/domain names that are valid for this site
 # See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['example.com'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['54.67.18.187', '.imagetraccloud.tech'])
+# ALLOWED_HOSTS = ['*']
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += ('gunicorn', )
