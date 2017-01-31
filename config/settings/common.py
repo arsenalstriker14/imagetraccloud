@@ -45,7 +45,7 @@ THIRD_PARTY_APPS = (
     'django_filters',
     # 'bootstrap3_datetime',
     'rest_framework', # 'rest_framework.authtoken',
-    'anymail',
+    '/Users/krcnyc/.virtualenvs/eb_imagetrac/lib/python3.5/site-packages.anymail.apps.AnymailConfig',
 )
 
 # Apps specific for this project go here.
