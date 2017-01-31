@@ -129,15 +129,19 @@ if 'RDS_DB_NAME' in os.environ:
           }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'imagetracdb',
-            'USER': 'krcnyc',
-            'PASSWORD': 'jadzhia',
-            'HOST' : 'localhost',
-            'PORT' : '5432',
-        }
-    } 
+        'default': env.db('DATABASE_URL', default='postgres:///imagetrac_docker'),
+    }
+    DATABASES['default']['ATOMIC_REQUESTS'] = True
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': 'imagetracdb',
+    #         'USER': 'krcnyc',
+    #         'PASSWORD': 'jadzhia',
+    #         'HOST' : 'localhost',
+    #         'PORT' : '5432',
+    #     }
+    # } 
 
 # DATABASES = {
 #     'default': {
