@@ -124,8 +124,8 @@ if 'RDS_DB_NAME' in os.environ:
              'NAME': os.environ['RDS_DB_NAME'],
              'USER': os.environ['RDS_USERNAME'],
              'PASSWORD': os.environ['RDS_PASSWORD'],
-             'HOST': os.environ['RDS_HOSTNAME'],
-             'PORT': os.environ['RDS_PORT'],
+             'HOST': 'aa18bxd0npuxmtm.cop1rbdymnqo.us-west-1.rds.amazonaws.com',
+             'PORT': '5432',
              }
           }
 else:
