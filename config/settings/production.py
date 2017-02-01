@@ -65,8 +65,8 @@ X_FRAME_OPTIONS = 'DENY'
 # ------------------------------------------------------------------------------
 # Hosts/domain names that are valid for this site
 # See https://docs.djangoproject.com/en/1.6/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['54.67.18.187', '.elasticbeanstalk.com', '.imagetraccloud.tech', 'localhost'])
-# ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['54.67.18.187', '.elasticbeanstalk.com', '.imagetraccloud.tech', 'localhost'])
+ALLOWED_HOSTS = ['http://imagetrac-dev.us-west-1.elasticbeanstalk.com/', '54.67.18.187', '.elasticbeanstalk.com', '.imagetraccloud.tech', 'localhost']
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += ('gunicorn', )
