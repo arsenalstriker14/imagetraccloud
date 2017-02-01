@@ -124,7 +124,7 @@ if 'RDS_DB_NAME' in os.environ:
              'NAME': os.environ['RDS_DB_NAME'],
              'USER': os.environ['RDS_USERNAME'],
              'PASSWORD': os.environ['RDS_PASSWORD'],
-             'HOST': 'aa18bxd0npuxmtm.cop1rbdymnqo.us-west-1.rds.amazonaws.com',
+             'HOST': 'imagetracdb.cop1rbdymnqo.us-west-1.rds.amazonaws.com',
              'PORT': '5432',
              }
           }
