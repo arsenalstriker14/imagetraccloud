@@ -118,6 +118,7 @@ MANAGERS = ADMINS
 # DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 if 'RDS_DB_NAME' in os.environ:
+    print(os.environ['RDS_DB_NAME'], os.environ['RDS_USERNAME'], os.environ['RDS_PASSWORD'], os.environ['RDS_HOSTNAME'], os.environ['RDS_PORT'])
     DATABASES = {
        'default': {
              'ENGINE':'django.db.backends.postgresql_psycopg2',
