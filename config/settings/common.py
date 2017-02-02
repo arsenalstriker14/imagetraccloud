@@ -95,14 +95,14 @@ FIXTURE_DIRS = (
 # ------------------------------------------------------------------------------
 # EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='anymail.backends.mailgun.MailgunBackend')  # or sendgrid.SendGridBackend, or...
-MAILGUN_API_KEY = env('DJANGO_MAILGUN_API_KEY', default='key-02740e6bccb4d7fe2a8d624f1fa25cbd')
-DEFAULT_FROM_EMAIL = 'postmaster@sandboxa3f104b2486549f39b93a011dbe86f3b.mailgun.org'
+MAILGUN_API_KEY = env('DJANGO_MAILGUN_API_KEY', default='')
+DEFAULT_FROM_EMAIL = ''
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = (
-    ("""Kevin Richard Chukes""", 'kevin@chukesinteractive.com'),
+    ("""""", ''),
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -136,11 +136,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'imagetracdb',
-        'USER': 'krcnyc',
-        'PASSWORD': 'jadzhia14G9',
-        'HOST' : 'imagetracdb.cop1rbdymnqo.us-west-1.rds.amazonaws.com',
-        'PORT' : '5432',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST' : '',
+        'PORT' : '',
     }
 } 
 
